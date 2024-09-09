@@ -7,10 +7,10 @@ import browser from './browser'
 const app = new Hono()
 app.get('/', (c) => c.text('Asta agent'))
 app.use(prettyJSON())
+app.use(cors())
 app.notFound((c) => c.json({ message: 'Not Found', ok: false }, 404))
 
-const page = await browser.newPage();
-await page.goto('https://google.com');
+
 
 export default {  
     port: 3000, 
