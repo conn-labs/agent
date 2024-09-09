@@ -9,3 +9,14 @@ datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
+
+
+
+// Start Generation Here
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId // Changed @test.ObjectId to @db.ObjectId
+  name      String
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

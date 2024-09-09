@@ -10,5 +10,12 @@
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.19.1",
+    "hono": "^4.5.11",
+    "openai": "^4.58.2",
+    "playwright": "^1.47.0",
+    "puppeteer": "^23.3.0"
   }
 }
