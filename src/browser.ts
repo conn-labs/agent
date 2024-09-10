@@ -2,13 +2,13 @@ import { launch } from "puppeteer";
 
 
 const browser = await launch({
-    headless: true,
+    headless: false,
      // Set to true if you want to run in headless mode
     args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-infobars',
-        '--window-size=1280,800',
+        '--window-size=1200,1200',
         '--disable-extensions',
         '--disable-gpu',
         '--disable-dev-shm-usage',
