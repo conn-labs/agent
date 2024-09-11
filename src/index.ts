@@ -208,4 +208,4 @@
 import { executeAgent } from "./llm/agent/agent";
 
 
-executeAgent("Go too google.com and search fossil watch and tell me cheapest one there")
+executeAgent("Go to wikipedia, manually input and search lionel messi")

@@ -8,6 +8,8 @@ import { waitForEvent } from './event';
 import { sleep } from '../../utils/sleep';
 import { highlightLinks } from './highlight';
 import { imgToBase64 } from '../../utils/img';
+import { agentClick } from './click';
+import { agentFillAndSubmit } from './input';
 puppeteer.use(StealthPlugin());
 
 const openai = new Openai()
@@ -64,6 +66,8 @@ export async function executeAgent(input: string) {
           - Give response in JSON format only as specified above.
           - Once your workflow is complete return the msg json with the success message of the data user asked to extract from the page.
           - If user has asked you to route to a specific url dont use click directly provid url
+          - If the data or result user asked is already present on the screenshot, just extract data from it rather than clicking and going to the exact page
+          - Only go to deep urls when Needed.
       
           Always base your actions and responses on the information visible in the screenshots. If you need clarification or additional information, ask the user before proceeding.`
         }
@@ -143,12 +147,18 @@ export async function executeAgent(input: string) {
         console.log(json.msg);
         break;
     }
+   
+    if(json.click) {
+      const bool = await agentClick(json.click, page)
+      ss = bool
+    }
 
+    if(json.input) {
+      const bool = await agentFillAndSubmit(page, json);
+      ss = bool
+    }
     
 
 }
-
-
-
 
 }
