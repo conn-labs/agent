@@ -6,6 +6,7 @@ import { sleep } from '../../utils/sleep';
 import { highlightLinks } from './highlight';
 
 export async function agentClick(name: string, page: Page): Promise<boolean> {
+  console.log(name)
   const link_text = name.replace(/[^a-zA-Z0-9 ]/g, '');
   console.log("Clicking on " + link_text);
 

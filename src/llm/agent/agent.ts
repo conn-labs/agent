@@ -10,6 +10,7 @@ import { highlightLinks } from './highlight';
 import { imgToBase64 } from '../../utils/img';
 import { agentClick } from './click';
 import { agentFillAndSubmit } from './input';
+import { getSimplifiedHtml } from './parseHtml';
 puppeteer.use(StealthPlugin());
 
 const openai = new Openai()
@@ -67,6 +68,7 @@ export async function executeAgent(input: string) {
           - Once your workflow is complete return the msg json with the success message of the data user asked to extract from the page.
           - If user has asked you to route to a specific url dont use click directly provid url
           - If the data or result user asked is already present on the screenshot, just extract data from it rather than clicking and going to the exact page
+          - Some pages might have pop ups to sign in, you can always click the cross button and remove them and if they are unskipable just go to another url
           - Only go to deep urls when Needed.
       
           Always base your actions and responses on the information visible in the screenshots. If you need clarification or additional information, ask the user before proceeding.`
@@ -104,7 +106,9 @@ export async function executeAgent(input: string) {
         url = null;
       }
 
+
       if(ss) {
+        console.log((await getSimplifiedHtml(page)))
         const img = await imgToBase64("screenshot.jpg");
         messages.push({
             role: "user",
