@@ -12,6 +12,8 @@ export async function agentFillAndSubmit(
   try {
     // Input text into form fields
     if (actions.input && actions.input.length > 0) {
+      console.log("Filling fields:", actions.input);
+      console.log("Click:", actions.click);
       for (const action of actions.input) {
         const fieldname = action.fieldname.replace(/[^a-zA-Z0-9 ]/g, '');
         const value = action.value;

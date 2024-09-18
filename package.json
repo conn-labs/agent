@@ -14,9 +14,11 @@
   "dependencies": {
     "@prisma/client": "^5.19.1",
     "@types/cheerio": "^0.22.35",
+    "@types/jsdom": "^21.1.7",
     "axios": "^1.7.7",
     "cheerio": "^1.0.0",
     "hono": "^4.5.11",
+    "jsdom": "^25.0.0",
     "openai": "^4.58.2",
     "playwright": "^1.47.0",
     "puppeteer": "^23.3.0",

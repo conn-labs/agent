@@ -10,19 +10,8 @@ export async function highlightLinks(page: Page): Promise<void> {
         });
 
         function isElementVisible(el: Element): boolean {
-            if (!el) return false;
             const style = window.getComputedStyle(el as HTMLElement);
             return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
-        }
-
-        function isElementInViewport(el: Element): boolean {
-            const rect = el.getBoundingClientRect();
-            return (
-                rect.top >= 0 &&
-                rect.left >= 0 &&
-                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-            );
         }
 
         function getElementType(el: Element): 'button' | 'link' | 'content' | 'other' {
@@ -42,42 +31,35 @@ export async function highlightLinks(page: Page): Promise<void> {
             }
         }
 
-        function shouldHighlightContent(el: Element): boolean {
+        function highlightElement(el: Element) {
+            if (!isElementVisible(el)) return;
+
             const elementType = getElementType(el);
-            if (elementType !== 'content') return false;
-            
-            const text = el.textContent?.trim() || '';
-            return text.length > 0 && text.length < 1000 && !el.querySelector('a, button, input[type="button"], input[type="submit"]');
+            let borderColor: string;
+
+            switch (elementType) {
+                case 'button':
+                    borderColor = 'blue';
+                    break;
+                case 'link':
+                    borderColor = 'green';
+                    break;
+                case 'content':
+                    borderColor = 'red';
+                    break;
+                default:
+                    borderColor = 'purple';
+                    break;
+            }
+
+            (el as HTMLElement).style.border = `2px solid ${borderColor}`;
+
+            const text = el.textContent?.replace(/[^a-zA-Z0-9 ]/g, '') || '';
+            el.setAttribute("gpt-link-text", text);
+            el.setAttribute("gpt-element-type", elementType);
         }
 
-        // Highlight interactive elements (buttons and links)
-        document.querySelectorAll(
-            "a, button, input[type='button'], input[type='submit'], [role='button'], [role='link'], [role='treeitem']"
-        ).forEach(el => {
-            if (isElementVisible(el) && isElementInViewport(el)) {
-                const elementType = getElementType(el);
-                const borderColor = elementType === 'button' ? 'blue' : 'green';
-                (el as HTMLElement).style.border = `2px solid ${borderColor}`;
-
-                const position = el.getBoundingClientRect();
-                if (position.width > 5 && position.height > 5) {
-                    const link_text = el.textContent?.replace(/[^a-zA-Z0-9 ]/g, '') || '';
-                    el.setAttribute("gpt-link-text", link_text);
-                    el.setAttribute("gpt-element-type", elementType);
-                }
-            }
-        });
-
-        // Highlight content elements
-        document.body.querySelectorAll('*').forEach(el => {
-            if (isElementVisible(el) && isElementInViewport(el) && !el.hasAttribute("gpt-element-type")) {
-                if (shouldHighlightContent(el)) {
-                    (el as HTMLElement).style.border = '2px solid red';
-                    const content_text = el.textContent?.replace(/[^a-zA-Z0-9 ]/g, '') || '';
-                    el.setAttribute("gpt-link-text", content_text);
-                    el.setAttribute("gpt-element-type", 'content');
-                }
-            }
-        });
+        // Highlight all visible elements
+        document.body.querySelectorAll('*').forEach(highlightElement);
     });
 }

@@ -1,211 +1,175 @@
-/// <reference lib="dom" />
+import { Browser, Page } from 'puppeteer';
 
+interface Rect {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+  width: number;
+  height: number;
+}
 
-// import puppeteer, {} from 'puppeteer-extra';
-// import { Browser, Page, ElementHandle } from 'puppeteer'
-// import StealthPlugin from 'puppeteer-extra-plugin-stealth';
-// import OpenAI from 'openai';
-// import { createInterface } from 'readline';
-// import { readFile } from 'fs/promises';
+interface Item {
+  element: Element;
+  include: boolean;
+  area: number;
+  rects: Rect[];
+  text: string;
+  id?: number;
+}
 
+interface LabelData {
+  x: number;
+  y: number;
+  bboxs: [number, number, number, number][];
+  id: number;
+}
 
-// puppeteer.use(StealthPlugin());
+async function highlightAndLabelElements(page: Page): Promise<LabelData[]> {
+  return await page.evaluate(() => {
+    function getElementRects(element: Element, vw: number, vh: number): Rect[] {
+      return [...element.getClientRects()].filter(bb => {
+        const center_x = bb.left + bb.width / 2;
+        const center_y = bb.top + bb.height / 2;
+        const elAtCenter = document.elementFromPoint(center_x, center_y);
+        return elAtCenter === element || element.contains(elAtCenter);
+      }).map(bb => {
+        const rect = {
+          left: Math.max(0, bb.left),
+          top: Math.max(0, bb.top),
+          right: Math.min(vw, bb.right),
+          bottom: Math.min(vh, bb.bottom)
+        };
+        return {
+          ...rect,
+          width: rect.right - rect.left,
+          height: rect.bottom - rect.top
+        };
+      });
+    }
 
-// const openai = new OpenAI();
-// const timeout = 5000;
+    function shouldIncludeElement(element: Element): boolean {
+      return (
+        ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A', 'IFRAME', 'VIDEO'].includes(element.tagName) ||
+        (element as HTMLElement).onclick != null ||
+        window.getComputedStyle(element).cursor === 'pointer'
+      );
+    }
 
+    function createHighlightElement(bbox: Rect, id: number): HTMLElement {
+      const borderColor = `hsl(${Math.floor(Math.random() * 360)}, 100%, 25%)`;
+      const textColor = 'white';
 
+      const newElement = document.createElement("div");
+      newElement.style.outline = `2px dashed ${borderColor}`;
+      newElement.style.position = "fixed";
+      newElement.style.left = `${bbox.left}px`;
+      newElement.style.top = `${bbox.top}px`;
+      newElement.style.width = `${bbox.width}px`;
+      newElement.style.height = `${bbox.height}px`;
+      newElement.style.pointerEvents = "none";
+      newElement.style.boxSizing = "border-box";
+      newElement.style.zIndex = "2147483647";
+      
+      const label = document.createElement("span");
+      label.textContent = id.toString();
+      label.style.position = "absolute";
+      label.style.top = `-${Math.min(19, bbox.top)}px`;
+      label.style.left = "0px";
+      label.style.background = borderColor;
+      label.style.color = textColor;
+      label.style.padding = "2px 4px";
+      label.style.fontSize = "14px";
+      label.style.fontFamily = "monospace";
+      label.style.borderRadius = "2px";
+      newElement.appendChild(label);
 
-// interface Message {
-//     role: string;
-//     content: string | { type: string; text?: string; image_url?: string }[];
-// }
+      return newElement;
+    }
 
-// (async () => {
-//     console.log("###########################################");
-//     console.log("# GPT4V-Browsing by Unconventional Coding #");
-//     console.log("###########################################\n");
+    function markPage(): LabelData[] {
+      // Unmark existing highlights
+      const existingLabels = document.querySelectorAll('div[style*="outline"][style*="position: fixed"]');
+      existingLabels.forEach(label => document.body.removeChild(label));
+      
+      const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+      const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
 
-//     const browser: Browser = await puppeteer.launch({
-//         headless: false,
-//     });
+      const items: Item[] = Array.from(document.querySelectorAll('*'))
+        .map((element) => {
+          const rects = getElementRects(element, vw, vh);
+          const area = rects.reduce((acc, rect) => acc + rect.width * rect.height, 0);
 
-//     const page: Page = await browser.newPage();
+          return {
+            element,
+            include: shouldIncludeElement(element),
+            area,
+            rects,
+            text: element.textContent?.trim().replace(/\s{2,}/g, ' ') || ''
+          };
+        })
+        .filter(item => item.include && item.area >= 20);
 
-//     await page.setViewport({
-//         width: 1200,
-//         height: 1200,
-//         deviceScaleFactor: 1,
-//     });
+      // Only keep inner clickable items
+      const filteredItems = items.filter(x => !items.some(y => x.element.contains(y.element) && x !== y));
 
-//     const messages: Message[] = [
-//         {
-//             role: "system",
-//             content: `You are a website crawler. You will be given instructions on what to do by browsing. You are connected to a web browser and you will be given the screenshot of the website you are on. The links on the website will be highlighted in red in the screenshot. Always read what is in the screenshot. Don't guess link names.
+      // Add sequential IDs
+      const itemsWithIds = filteredItems.map((item, index) => ({
+        ...item,
+        id: index + 1
+      }));
 
-//             You can go to a specific URL by answering with the following JSON format:
-//             {"url": "url goes here"}
+      // Create highlighting elements
+      itemsWithIds.forEach(item => {
+        item.rects.forEach((bbox) => {
+          const highlightElement = createHighlightElement(bbox, item.id!);
+          document.body.appendChild(highlightElement);
+        });
+      });
 
-//             You can click links on the website by referencing the text inside of the link/button, by answering in the following JSON format:
-//             {"click": "Text in link"}
+      return itemsWithIds.map(item => ({
+        x: (item.rects[0].left + item.rects[0].right) / 2, 
+        y: (item.rects[0].top + item.rects[0].bottom) / 2,
+        bboxs: item.rects.map(({left, top, width, height}) => [left, top, width, height] as [number, number, number, number]),
+        id: item.id!
+      }));
+    }
 
-//             Once you are on a URL and you have found the answer to the user's question, you can answer with a regular message.
+    return markPage();
+  });
+}
 
-//             Use google search by set a sub-page like 'https://google.com/search?q=search' if applicable. Prefer to use Google for simple queries. If the user provides a direct URL, go to that one. Do not make up links`,
-//         }
-//     ];
+// Usage example
+async function exampleUsage(page: Page) {
+  await page.goto('https://example.com');
+  const labelData = await highlightAndLabelElements(page);
+  console.log('Label data:', labelData);
+}
 
-//     console.log("GPT: How can I assist you today?")
-//     const prompt = await input("You: ");
-//     console.log();
+// Main execution
+import puppeteer from 'puppeteer';
+import { performAction } from './llm/agent/action';
 
-//     messages.push({
-//         role: "user",
-//         content: prompt,
-//     });
+(async () => {
+    const browser: Browser = await puppeteer.launch({
+        headless: false,
+    });
 
-//     let url: string | null = null;
-//     let screenshot_taken = false;
+    const page: Page = await browser.newPage();
 
-//     while (true) {
-//         if (url) {
-//             console.log("Crawling " + url);
-//             await page.goto(url, {
-//                 waitUntil: "domcontentloaded",
-//                 timeout: timeout,
-//             });
+    await page.setViewport({
+        width: 1200,
+        height: 1200,
+        deviceScaleFactor: 1,
+    });
+  
+  await page.goto('https://www.wikipedia.org');
+  const labelData = await highlightAndLabelElements(page);
+  const data = labelData.filter(x => x.id === 1);
+  console.log( "DATA", data)
+  //@ts-ignore
+  performAction(page,  { action: 'click', element: "1",  }, data);
+  
+  await page.screenshot({ path: 'highlighted-page.png' });
 
-//             await Promise.race([
-//                 waitForEvent(page, 'load'),
-//                 sleep(timeout)
-//             ]);
-
-//             await highlight_links(page);
-
-//             await page.screenshot({
-//                 path: "screenshot.jpg",
-//                 fullPage: true,
-//             });
-
-//             screenshot_taken = true;
-//             url = null;
-//         }
-
-//         if (screenshot_taken) {
-//             const base64_image = await image_to_base64("screenshot.jpg");
-
-//             messages.push({
-//                 role: "user",
-//                 content: [
-//                     {
-//                         type: "image_url",
-//                         image_url: base64_image,
-//                     },
-//                     {
-//                         type: "text",
-//                         text: "Here's the screenshot of the website you are on right now. You can click on links with {\"click\": \"Link text\"} or you can crawl to another URL if this one is incorrect. If you find the answer to the user's question, you can respond normally.",
-//                     }
-//                 ]
-//             });
-
-//             screenshot_taken = false;
-//         }
-
-//         const response = await openai.chat.completions.create({
-//             model: "gpt-4o-mini",
-//             max_tokens: 1024,
-//             messages: messages as any    , // Type assertion needed due to OpenAI types
-//         });
-
-//         const message = response.choices[0].message;
-//         const message_text = message.content || '';
-
-//         messages.push({
-//             role: "assistant",
-//             content: message_text,
-//         });
-
-//         console.log("GPT: " + message_text);
-
-//         if (typeof message_text === 'string') {
-//             if (message_text.includes('{"click": "')) {
-//                 const match = message_text.match(/\{"click": "(.*?)"\}/);
-//                 if (match) {
-//                     const link_text = match[1].replace(/[^a-zA-Z0-9 ]/g, '');
-//                     console.log("Clicking on " + link_text);
-
-//                     try {
-//                         const elements: ElementHandle<Element>[] = await page.$$('[gpt-link-text]');
-
-//                         let partial: ElementHandle<Element> | null = null;
-//                         let exact: ElementHandle<Element> | null = null;
-
-//                         for (const element of elements) {
-//                             const attributeValue = await element.evaluate((el: { getAttribute: (arg0: string) => any; }) => el.getAttribute('gpt-link-text'));
-
-//                             if (attributeValue && attributeValue.includes(link_text)) {
-//                                 partial = element;
-//                             }
-
-//                             if (attributeValue === link_text) {
-//                                 exact = element;
-//                             }
-//                         }
-
-//                         if (exact || partial) {
-//                             const [response] = await Promise.all([
-//                                 page.waitForNavigation({ waitUntil: 'domcontentloaded' }).catch((e: { message: any; }) => console.log("Navigation timeout/error:", e.message)),
-//                                 (exact || partial)!.click()
-//                             ]);
-
-//                             await Promise.race([
-//                                 waitForEvent(page, 'load'),
-//                                 sleep(timeout)
-//                             ]);
-
-//                             await highlight_links(page);
-
-//                             await page.screenshot({
-//                                 path: "screenshot.jpg",
-//                                 fullPage: true
-//                             });
-
-//                             screenshot_taken = true;
-//                         } else {
-//                             throw new Error("Can't find link");
-//                         }
-//                     } catch (error) {
-//                         console.log("ERROR: Clicking failed", error);
-
-//                         messages.push({
-//                             role: "user",
-//                             content: "ERROR: I was unable to click that element",
-//                         });
-//                     }
-
-//                     continue;
-//                 }
-//             } else if (message_text.includes('{"url": "')) {
-//                 const match = message_text.match(/\{"url": "(.*?)"\}/);
-//                 if (match) {
-//                     url = match[1];
-//                     continue;
-//                 }
-//             }
-//         }
-
-//         const new_prompt = await input("You: ");
-//         console.log();
-
-//         messages.push({
-//             role: "user",
-//             content: new_prompt,
-//         });
-//     }
-// })();
-
-
-import { executeAgent } from "./llm/agent/agent";
-
-
-executeAgent("go to google.com/finance and search apple inc and tell prices")
+})();

@@ -10,7 +10,8 @@ import { highlightLinks } from './highlight';
 import { imgToBase64 } from '../../utils/img';
 import { agentClick } from './click';
 import { agentFillAndSubmit } from './input';
-import { getSimplifiedHtml } from './parseHtml';
+import  templatize  from './parseHtml';
+import { cleanHTML } from './parse';
 puppeteer.use(StealthPlugin());
 
 const openai = new Openai()
@@ -108,7 +109,8 @@ export async function executeAgent(input: string) {
 
 
       if(ss) {
-        console.log((await getSimplifiedHtml(page)))
+        const html = await cleanHTML(await page.content())
+        console.log(html)
         const img = await imgToBase64("screenshot.jpg");
         messages.push({
             role: "user",
@@ -122,7 +124,7 @@ export async function executeAgent(input: string) {
                 },
                 {
                     type: "text",
-                    text: "Here's the ss now continue the workflow",
+                    text: "Here's the ss now continue the workflow along with the html of the page \\n\\n " + html, 
                 }
             ]
         });
