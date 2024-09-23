@@ -18,8 +18,8 @@ interface Data {
 
 async function simulateHumanClick(page: Page, x: number, y: number): Promise<void> {
   await page.mouse.move(x, y);
-//   await page.mouse.down();
-//   await page.mouse.up();
+  await page.mouse.down();
+  await page.mouse.up();
 }
 
 export async function simulateHumanTyping(page: Page, text: string): Promise<void> {
@@ -33,17 +33,18 @@ async function findLabel(labelData: LabelData[], elementId: string): Promise<Lab
   return data[0]
 }
 
-export async function performAction(page: Page, data: Data | null, labelData: LabelData): Promise<void> {
+export async function performAction(page: Page, data: Data | null, labelData: any): Promise<void> {
   if (!data) return;
 
   const  nextAction  = { action: 'type', element: "21", text: 'Hello world' };
-  const label = labelData
+  const label = labelData[0]
   console.log(label)    
   if (!label) {
     console.error(`Label not found for element: ${nextAction.element}`);
     return;
   }
   console.log(nextAction)
+  console.log(validateCoordinates(label.x, label.y))
   switch (nextAction.action) {
     case 'click':
       console.log(`Clicking ${JSON.stringify(label)}`);
@@ -63,4 +64,10 @@ export async function performAction(page: Page, data: Data | null, labelData: La
     default:
       console.error(`Unknown action: ${nextAction.action}`);
   }
+}
+
+
+function validateCoordinates(x: number, y: number): boolean {
+  console.log(x, y)
+  return Number.isFinite(x) && Number.isFinite(y) && x >= 0 && y >= 0;
 }

@@ -128,10 +128,12 @@ async function highlightAndLabelElements(page: Page): Promise<LabelData[]> {
       });
 
       return itemsWithIds.map(item => ({
-        x: (item.rects[0].left + item.rects[0].right) / 2, 
-        y: (item.rects[0].top + item.rects[0].bottom) / 2,
-        bboxs: item.rects.map(({left, top, width, height}) => [left, top, width, height] as [number, number, number, number]),
-        id: item.id!
+        id: item.id!,
+        x: Math.round((item.rects[0].left + item.rects[0].right) / 2),
+        y: Math.round((item.rects[0].top + item.rects[0].bottom) / 2),
+        bboxs: item.rects.map(({left, top, width, height}) => 
+          [Math.round(left), Math.round(top), Math.round(width), Math.round(height)] as [number, number, number, number]
+        ),
       }));
     }
 
@@ -165,11 +167,12 @@ import { performAction } from './llm/agent/action';
   
   await page.goto('https://www.wikipedia.org');
   const labelData = await highlightAndLabelElements(page);
-  const data = labelData.filter(x => x.id === 1);
+  const data = labelData.filter(x => x.id === 21);
   console.log( "DATA", data)
+  await page.screenshot({ path: 'highlighted-page.png' });
   //@ts-ignore
   performAction(page,  { action: 'click', element: "1",  }, data);
   
-  await page.screenshot({ path: 'highlighted-page.png' });
+
 
 })();
