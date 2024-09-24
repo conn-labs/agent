@@ -16,7 +16,7 @@ export interface Item {
   id?: number;
 }
 
-export interface LabelData {
+export interface Elements {
   x: number;
   y: number;
   bboxs: [number, number, number, number][];

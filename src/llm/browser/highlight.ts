@@ -1,9 +1,9 @@
 import { Page } from "puppeteer";
-import { LabelData, Item, Rect } from "../../types/browser";
+import {   Elements, Item, Rect } from "../../types/browser";
 
 export async function highlightAndLabelElements(
   page: Page,
-): Promise<LabelData[]> {
+): Promise<Elements[]> {
   return await page.evaluate(() => {
     function getElementRects(element: Element, vw: number, vh: number): Rect[] {
       return [...element.getClientRects()]
@@ -75,7 +75,7 @@ export async function highlightAndLabelElements(
       return newElement;
     }
 
-    function markPage(): LabelData[] {
+    function markPage():   Elements[] {
       // Unmark existing highlights
       const existingLabels = document.querySelectorAll(
         'div[style*="outline"][style*="position: fixed"]',

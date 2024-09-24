@@ -1,4 +1,6 @@
 import { Page } from "puppeteer";
+import { AgentAction, ElementData } from "../../types/action";
+import { Elements } from "../../types/browser";
 
 
 export async function eventClick(
@@ -44,6 +46,46 @@ export async function scrollToElement(
     }, x, y);
 }
 
-export async function executeAgentAction() {
-    
+async function findElement(elements: Elements[], id: number): Promise<ElementData | null> {
+    const element = elements.find((e: Elements) => e.id === id);
+    if(!element) return null;
+    return {
+        id: element.id,
+        x: element.x,
+        y: element.y,
+    }
+}
+
+
+export async function executeAgentAction(page: Page, actions: AgentAction[], elements: Elements[]): Promise<String | null | undefined> {
+    for (const action of actions) { { 
+        
+        switch(action.action) {
+
+            case "click":
+                const element = await findElement(elements, action.elementId || 0);
+                if(element) {
+                    await eventClick(page, element.x, element.y);
+                    return "clicked";
+                }
+                break;
+            case "type":
+                const typeelement = await findElement(elements, action.elementId || 0);
+                if(!typeelement) break;
+                await eventClick(page, typeelement.x, typeelement.y);
+                await eventType(page, action.text || "");
+                return "typed";
+            case "scroll":
+                const scrollelement = await findElement(elements, action.elementId || 0);
+                if(!scrollelement) break;
+                await scrollToElement(page, scrollelement.x , scrollelement.y );
+                return "scrolled";
+            case "memorize":
+                return action.text || null;
+        }
+
+    }
+
+}
+
 }
