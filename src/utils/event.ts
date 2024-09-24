@@ -26,7 +26,7 @@ export class EventEmitter {
   public emit(event: string, ...args: any[]) {
     if (!this.events.has(event)) return;
 
-    this.events.get(event)?.forEach(listener => listener(...args));
+    this.events.get(event)?.forEach((listener) => listener(...args));
   }
 
   public once(event: string, listener: Function) {

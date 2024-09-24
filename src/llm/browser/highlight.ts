@@ -1,5 +1,5 @@
 import { Page } from "puppeteer";
-import {   Elements, Item, Rect } from "../../types/browser";
+import { Elements, Item, Rect } from "../../types/browser";
 
 export async function highlightAndLabelElements(
   page: Page,
@@ -75,7 +75,7 @@ export async function highlightAndLabelElements(
       return newElement;
     }
 
-    function markPage():   Elements[] {
+    function markPage(): Elements[] {
       // Unmark existing highlights
       const existingLabels = document.querySelectorAll(
         'div[style*="outline"][style*="position: fixed"]',

@@ -5,7 +5,7 @@ export interface ElementData {
 }
 
 export interface NextAction {
-  action: "click" | "type" ;
+  action: "click" | "type";
   element: string;
   text?: string;
 }
@@ -14,12 +14,8 @@ export interface Data {
   nextAction: NextAction;
 }
 
-
-
-
 export interface AgentAction {
-    action: "click" | "type" | "scroll" | "memorize";
-    elementId?: number;
-    text?: string;
+  action: "click" | "type" | "scroll" | "memorize";
+  elementId?: number;
+  text?: string;
 }
-
