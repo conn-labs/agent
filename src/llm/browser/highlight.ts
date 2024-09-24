@@ -1,32 +1,9 @@
-import { Browser, Page } from "puppeteer";
-import { JSDOM } from "jsdom";
+import { Page } from "puppeteer";
+import { LabelData, Item, Rect } from "../../types/browser";
 
-interface Rect {
-  left: number;
-  top: number;
-  right: number;
-  bottom: number;
-  width: number;
-  height: number;
-}
-
-interface Item {
-  element: Element;
-  include: boolean;
-  area: number;
-  rects: Rect[];
-  text: string;
-  id?: number;
-}
-
-interface LabelData {
-  x: number;
-  y: number;
-  bboxs: [number, number, number, number][];
-  id: number;
-}
-
-async function highlightAndLabelElements(page: Page): Promise<LabelData[]> {
+export async function highlightAndLabelElements(
+  page: Page,
+): Promise<LabelData[]> {
   return await page.evaluate(() => {
     function getElementRects(element: Element, vw: number, vh: number): Rect[] {
       return [...element.getClientRects()]
@@ -170,36 +147,3 @@ async function highlightAndLabelElements(page: Page): Promise<LabelData[]> {
     return markPage();
   });
 }
-
-// Usage example
-async function exampleUsage(page: Page) {
-  await page.goto("https://example.com");
-  const labelData = await highlightAndLabelElements(page);
-  console.log("Label data:", labelData);
-}
-
-// Main execution
-import puppeteer from "puppeteer";
-import { performAction } from "./llm/agent/action";
-
-(async () => {
-  const browser: Browser = await puppeteer.launch({
-    headless: false,
-  });
-
-  const page: Page = await browser.newPage();
-
-  await page.setViewport({
-    width: 1200,
-    height: 1200,
-    deviceScaleFactor: 1,
-  });
-
-  await page.goto("https://www.wikipedia.org");
-  const labelData = await highlightAndLabelElements(page);
-  const data = labelData.filter((x) => x.id === 21);
-  console.log("DATA", data);
-  await page.screenshot({ path: "highlighted-page.png" });
-  //@ts-ignore
-  performAction(page, { action: "click", element: "1" }, data);
-})();
