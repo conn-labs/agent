@@ -15,6 +15,7 @@ export async function eventClick(
 export async function eventType(page: Page, text: string): Promise<void> {
   for (const char of text) {
     await page.keyboard.type(char, { delay: Math.random() * 100 + 50 });
+    await page.keyboard.press('Enter');
   }
 }
 

@@ -203,3 +203,9 @@ import { JSDOM } from "jsdom";
 //   //@ts-ignore
 //   performAction(page, { action: "click", element: "1" }, data);
 // })();
+
+
+
+import { executeAgent } from "./llm/browser/execute";
+
+await executeAgent("1.Go to google search. 2. Then search hello kitty 3. Your workflow is then complete tell me data from the page", "", "one");

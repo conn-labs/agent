@@ -15,6 +15,6 @@ export async function llmRequest(
       type: "json_object",
     },
   });
-
+  console.log(response.choices[0].message.content)
   return response.choices[0].message.content || null;
 }

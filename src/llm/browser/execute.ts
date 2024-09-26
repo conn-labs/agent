@@ -48,13 +48,13 @@ export async function executeAgent(
 
       elements = await highlightAndLabelElements(page);
       await page.screenshot({
-        path: `${sessionId}/${screenshotHash}.jpg`,
+        path: `${sessionId}-${screenshotHash}.jpg`,
         fullPage: true,
       });
-      screenshotHash++;
       screenshotTaken = true;
-      screenshot = await imgToBase64(`${sessionId}/${screenshotHash}.jpg`);
+      screenshot = await imgToBase64(`${sessionId}-${screenshotHash}.jpg`)
       url = null;
+      screenshotHash++;
     }
 
     if (screenshotTaken) {
