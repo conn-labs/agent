@@ -23,7 +23,7 @@ URL Providing:
 
 Click action: 
 
-AgentAction [{
+actions [{
   action: "click";
   elementId: "The id of the element to click on" ; 
 }]
@@ -36,7 +36,7 @@ AgentAction [{
 
 Type and input action: 
 
-AgentAction [{
+actions [{
   action: "type" 
   elementId: "The id of the element to click on and enter text" ;
   text?: "The text to input";
@@ -56,7 +56,7 @@ AgentAction [{
 
 Memorize and Remember data from page action:
 
-AgentAction [{
+actions [{
   action: "memorize";
 }]
 
@@ -94,4 +94,10 @@ Note:
 7. Thanks for the help! Hopefully, you complete all the workflows.
 8. Please provide response in JSON mode.
 9. Please provide only the pure JSON content without any additional information or tags, as it will be used directly for function calls.
+10. When a workflow requires you to return data, it should only be included in the success message, which signifies the end of the workflow. For data needed during the workflow, use the memorize action instead. It's important to note that the success message and memorize action are mutually exclusive and should never be used together in the same step of a workflow.
+
+
+Special Cases for websites:
+
+1.Google.com: When interacting with https://www.google.com, do not include a click action for the search button after entering text in the search input field. The search will be automatically triggered by default in the code to avoid errors caused by Google's dynamic search suggestions, which can obscure the search button.
 `;

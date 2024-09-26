@@ -35,8 +35,8 @@ export async function executeAgent(
   let screenshotTaken: boolean = false;
   let url: string | null = null;
   let screenshotHash: number = 1;
+  const page = await browser.newPage();
   while (true) {
-    const page = await browser.newPage();
 
     if (url) {
       await page.goto(url, {
@@ -88,7 +88,7 @@ export async function executeAgent(
       content: response.toString(),
     });
 
-    const data: any = JSON.parse(response.toString());
+    const data: any = JSON.parse(response.toString()); 
 
     if (data.url) {
       url = data.url;
@@ -98,13 +98,15 @@ export async function executeAgent(
       console.log(data.success);
       break;
     }
-    if (data.action) {
+    if (data.actions) {
+      console.log("Action", data.actions)
+      console.log(elements)
       const mem: String | null | undefined = await executeAgentAction(
         page,
-        data.action as AgentAction[],
+        data.actions as AgentAction[],
         elements,
       );
-      console.log(mem);
+      console.log("Mem", mem);
     }
   }
 }
