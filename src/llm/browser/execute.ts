@@ -100,23 +100,47 @@ export async function executeAgent(
       break;
     }
     if (data.actions) {
-      const orignalUrl = await page.url()
+      const orignalUrl = await new URL(page.url())
       const mem: String | null | undefined = await executeAgentAction(
         page,
         data.actions as AgentAction[],
         elements,
       );
-      const newUrl = await page.url()
-      console.log(orignalUrl === newUrl)
-      if(orignalUrl !== newUrl) {
-        console.log("moved")
-        url = newUrl
-        screenshotTaken = false
-        screenshot = ""
+
+      await sleep(4000)
+      const newUrl = await new URL(page.url())
+
+      if(orignalUrl.toString() !== newUrl.toString()){
+
+        elements = await highlightAndLabelElements(page);
+
+        await page.screenshot({
+          path: `${sessionId}-${screenshotHash}.jpg`,
+          fullPage: true,
+        });
+        screenshotTaken = true;
+        screenshot = await imgToBase64(`${sessionId}-${screenshotHash}.jpg`)
+        url = null;
+        screenshotHash++;
+        console.log("urls not same");
       }
+
+      console.log(newUrl.toString())
       console.log("Mem", mem);
     }
   }
+}
+
+
+function compareUrls(url1: string, url2: string): boolean {
+  const parsedUrl1 = new URL(url1);
+  const parsedUrl2 = new URL(url2);
+
+  return (
+    parsedUrl1.origin === parsedUrl2.origin &&
+    parsedUrl1.pathname === parsedUrl2.pathname &&
+    parsedUrl1.search === parsedUrl2.search
+  );
 }
 
 // src/utils/sleep.ts
