@@ -14,9 +14,9 @@ export async function eventClick(
 
 export async function eventType(page: Page, text: string): Promise<void> {
   for (const char of text) {
-    await page.keyboard.type(char, { delay: Math.random() * 100 + 50 });
-    await page.keyboard.press('Enter');
+    await page.keyboard.type(char, { delay: 1000 });
   }
+  await page.keyboard.press('Enter');
 }
 
 export async function moveToElement(
@@ -66,7 +66,7 @@ export async function executeAgentAction(
     {
       switch (action.action) {
         case "click":
-          const element = await findElement(elements, action.elementId || 0);
+          const element = await findElement(elements,Number(action.elementId) || 0);
           if (element) {
             await eventClick(page, element.x, element.y);
             return "clicked";
@@ -75,7 +75,7 @@ export async function executeAgentAction(
         case "type":
           const typeelement = await findElement(
             elements,
-            action.elementId || 0,
+           Number(action.elementId) || 0,
           );
           if (!typeelement) break;
           await eventClick(page, typeelement.x, typeelement.y);
@@ -84,7 +84,7 @@ export async function executeAgentAction(
         case "scroll":
           const scrollelement = await findElement(
             elements,
-            action.elementId || 0,
+           Number(action.elementId) || 0,
           );
           if (!scrollelement) break;
           await scrollToElement(page, scrollelement.x, scrollelement.y);

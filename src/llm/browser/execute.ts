@@ -39,6 +39,7 @@ export async function executeAgent(
   while (true) {
 
     if (url) {
+      console.log("URL", url)
       await page.goto(url, {
         waitUntil: "domcontentloaded",
         timeout: 5000,
@@ -70,7 +71,7 @@ export async function executeAgent(
           },
           {
             type: "text",
-            text: "Here's the ss now continue the workflow accurately",
+            text: "Here's the screenshot now continue the workflow accurately and complete further steps",
           },
         ],
       });
@@ -99,13 +100,20 @@ export async function executeAgent(
       break;
     }
     if (data.actions) {
-      console.log("Action", data.actions)
-      console.log(elements)
+      const orignalUrl = await page.url()
       const mem: String | null | undefined = await executeAgentAction(
         page,
         data.actions as AgentAction[],
         elements,
       );
+      const newUrl = await page.url()
+      console.log(orignalUrl === newUrl)
+      if(orignalUrl !== newUrl) {
+        console.log("moved")
+        url = newUrl
+        screenshotTaken = false
+        screenshot = ""
+      }
       console.log("Mem", mem);
     }
   }
