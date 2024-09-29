@@ -14,7 +14,6 @@ export async function executeAgent(
   input: string,
   context: string,
   sessionId: string,
-  
 ) {
   const memeorizedText = new Set<string>();
 
@@ -38,9 +37,8 @@ export async function executeAgent(
   let screenshotHash: number = 1;
   const page = await browser.newPage();
   while (true) {
-
     if (url) {
-      console.log("URL", url)
+      console.log("URL", url);
       await page.goto(url, {
         waitUntil: "domcontentloaded",
         timeout: 5000,
@@ -54,7 +52,7 @@ export async function executeAgent(
         fullPage: true,
       });
       screenshotTaken = true;
-      screenshot = await imgToBase64(`${sessionId}-${screenshotHash}.jpg`)
+      screenshot = await imgToBase64(`${sessionId}-${screenshotHash}.jpg`);
       url = null;
       screenshotHash++;
     }
@@ -90,7 +88,7 @@ export async function executeAgent(
       content: response.toString(),
     });
 
-    const data: any = JSON.parse(response.toString()); 
+    const data: any = JSON.parse(response.toString());
 
     if (data.url) {
       url = data.url;
@@ -101,18 +99,17 @@ export async function executeAgent(
       break;
     }
     if (data.actions) {
-      const orignalUrl = await new URL(page.url())
+      const orignalUrl = await new URL(page.url());
       const mem: String | null | undefined = await executeAgentAction(
         page,
         data.actions as AgentAction[],
         elements,
       );
 
-      await sleep(4000)
-      const newUrl = await new URL(page.url())
+      await sleep(4000);
+      const newUrl = await new URL(page.url());
 
-      if(orignalUrl.toString() !== newUrl.toString()){
-
+      if (orignalUrl.toString() !== newUrl.toString()) {
         elements = await highlightAndLabelElements(page);
 
         await page.screenshot({
@@ -120,18 +117,17 @@ export async function executeAgent(
           fullPage: true,
         });
         screenshotTaken = true;
-        screenshot = await imgToBase64(`${sessionId}-${screenshotHash}.jpg`)
+        screenshot = await imgToBase64(`${sessionId}-${screenshotHash}.jpg`);
         url = null;
         screenshotHash++;
         console.log("urls not same");
       }
 
-      console.log(newUrl.toString())
+      console.log(newUrl.toString());
       console.log("Mem", mem);
     }
   }
 }
-
 
 function compareUrls(url1: string, url2: string): boolean {
   const parsedUrl1 = new URL(url1);

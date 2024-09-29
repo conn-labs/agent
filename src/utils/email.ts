@@ -1,6 +1,5 @@
 import axios from "axios";
 
-
 export async function sendMagicLinkMail(
   link: string,
   email: string,

@@ -4,25 +4,43 @@ import passport from "passport";
 import { sendMagicLinkMail, subscribeToEvents } from "../../utils/email";
 import { generateFromEmail } from "unique-username-generator";
 
-passport.serializeUser(function(user: Express.User, done: (err: any, id?: unknown) => void) {
-    done(null, user);
+passport.serializeUser(function (
+  user: Express.User,
+  done: (err: any, id?: unknown) => void,
+) {
+  done(null, user);
 });
 
-passport.deserializeUser(function(user: Express.User, done: (err: any, user?: Express.User | false | null) => void) {
-    done(null, user);
+passport.deserializeUser(function (
+  user: Express.User,
+  done: (err: any, user?: Express.User | false | null) => void,
+) {
+  done(null, user);
 });
 
 const magicLogin: MagicLoginStrategy = new MagicLoginStrategy({
   secret: process.env.SECRET || "",
   callbackUrl: "/auth/magiclogin/callback",
-  
-  sendMagicLink: async (destination: string, href: string, verificationCode: string, req) => {
+
+  sendMagicLink: async (
+    destination: string,
+    href: string,
+    verificationCode: string,
+    req,
+  ) => {
     try {
       const callbackUrl = `${req.protocol}://${req.get("host")}${href}`;
       const { client, device, time, date } = req.body;
 
       // Sending magic link email
-      const result = await sendMagicLinkMail(callbackUrl, destination, client, device, time, date);
+      const result = await sendMagicLinkMail(
+        callbackUrl,
+        destination,
+        client,
+        device,
+        time,
+        date,
+      );
 
       // Log result in case of failure or for future debugging
       console.log("Magic link sent to:", destination, "with result:", result);
@@ -31,13 +49,15 @@ const magicLogin: MagicLoginStrategy = new MagicLoginStrategy({
     }
   },
 
-  verify: async (payload: any, verifyCallback: (error: any, user?: any) => void, req) => {
+  verify: async (
+    payload: any,
+    verifyCallback: (error: any, user?: any) => void,
+    req,
+  ) => {
     try {
       const { destination } = payload;
 
-      const username = generateFromEmail(
-        destination
-      )
+      const username = generateFromEmail(destination);
 
       // Check if the user already exists
       let user = await prisma.user.findUnique({

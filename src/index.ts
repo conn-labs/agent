@@ -203,11 +203,12 @@ import { JSDOM } from "jsdom";
 //   performAction(page, { action: "click", element: "1" }, data);
 // })();
 
-
-
 import { executeAgent } from "./llm/browser/execute";
-await executeAgent("go to claude ai and research how to write good prompts for AI models, and return a concise summary", "", "one")
+await executeAgent(
+  "go to claude ai and research how to write good prompts for AI models, and return a concise summary",
+  "",
+  "one",
+);
 
 // when trying to access gravitational waves ka wikipedia link, it first typed in gravitonal waves wikipedia in the search bar and then clicked on the wikipedia link that appeared in the search results. After that, it memorized the data from the page and then returned a concise summary of the page.
 // in cases such as conversing on chatgpt, it repeats the same question in the conversation as it doesn't beieve the page has changed(general problem in non url non ui changing pages)
-

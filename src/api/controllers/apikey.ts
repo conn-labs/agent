@@ -4,27 +4,27 @@ import { findUserByEmail } from "../../common/findUser";
 import { prisma } from "../../lib";
 import { generateApiKey } from "../../utils/apikey";
 
-export const createApiKey = async (req:Request, res: Response) => {
+export const createApiKey = async (req: Request, res: Response) => {
   const email = await validateJwt(req);
-  const { description } = req.body
+  const { description } = req.body;
   if (!email) {
-     res.status(401).json({ error: "Unauthorized: Invalid or missing token" });
-     return
+    res.status(401).json({ error: "Unauthorized: Invalid or missing token" });
+    return;
   }
 
-  const user = await findUserByEmail(email)
+  const user = await findUserByEmail(email);
 
   if (!user) {
-     res.status(404).json({ error: "User not found" });
-     return
+    res.status(404).json({ error: "User not found" });
+    return;
   }
 
   const apiKey = await prisma.apiKey.create({
     data: {
       key: generateApiKey(),
       description,
-      userId: user.id
-    }
+      userId: user.id,
+    },
   });
 
   console.log("Api key created", apiKey.key);
@@ -35,8 +35,7 @@ export const createApiKey = async (req:Request, res: Response) => {
     data: {
       id: apiKey.id,
       key: apiKey.key,
-      description: apiKey.description
-    }
+      description: apiKey.description,
+    },
   });
-
-}
+};

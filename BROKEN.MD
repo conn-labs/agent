@@ -1,3 +1,3 @@
-# List of Sites Broken 
+# List of Sites Broken
 
 - Amazon
