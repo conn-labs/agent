@@ -14,7 +14,7 @@ export async function executeAgent(
   input: string,
   context: string,
   sessionId: string,
-
+  
 ) {
   const memeorizedText = new Set<string>();
 
@@ -51,6 +51,7 @@ export async function executeAgent(
       elements = await highlightAndLabelElements(page);
       await page.screenshot({
         path: `${sessionId}-${screenshotHash}.jpg`,
+        fullPage: true,
       });
       screenshotTaken = true;
       screenshot = await imgToBase64(`${sessionId}-${screenshotHash}.jpg`)
@@ -116,7 +117,8 @@ export async function executeAgent(
 
         await page.screenshot({
           path: `${sessionId}-${screenshotHash}.jpg`,
-          });
+          fullPage: true,
+        });
         screenshotTaken = true;
         screenshot = await imgToBase64(`${sessionId}-${screenshotHash}.jpg`)
         url = null;
