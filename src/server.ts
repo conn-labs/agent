@@ -9,6 +9,7 @@ import fs from 'fs';
 import path from 'path';
 import { magicLogin } from './api/controllers/authentication';
 import passport from 'passport';
+import { createApiKey } from './api/controllers/apikey';
 
 const app: Express = express();
 const server: HttpServer = createServer(app);
@@ -57,6 +58,8 @@ app.get(
     }
   );
 
+
+  app.post("/api/keys", createApiKey)
   
 
 type WsHandler = (ws: WebSocket, data: any, clients: Set<WebSocket>) => void;
