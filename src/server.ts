@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 app.use(session({
-  secret: 'your-secret-key',
+  secret: process.env.SECRET || "PLACE_HOLDER",
   resave: false,
   saveUninitialized: true,
   cookie: { secure: process.env.NODE_ENV === 'production' }
@@ -29,7 +29,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Welcome to the Bun-Express server with WebSocket routing!');
 });
 
-app.post("/api/auth", magicLogin.send)
+app.post("/auth/magiclogin", magicLogin.send)
 
 
 app.get(

@@ -2,6 +2,15 @@ import MagicLoginStrategy from "passport-magic-login";
 import { prisma } from "../../lib";
 import passport from "passport";
 import { sendMagicLinkMail, subscribeToEvents } from "../../utils/email";
+import { generateFromEmail } from "unique-username-generator";
+
+passport.serializeUser(function(user: Express.User, done: (err: any, id?: unknown) => void) {
+    done(null, user);
+});
+
+passport.deserializeUser(function(user: Express.User, done: (err: any, user?: Express.User | false | null) => void) {
+    done(null, user);
+});
 
 const magicLogin: MagicLoginStrategy = new MagicLoginStrategy({
   secret: process.env.SECRET || "",
@@ -24,7 +33,11 @@ const magicLogin: MagicLoginStrategy = new MagicLoginStrategy({
 
   verify: async (payload: any, verifyCallback: (error: any, user?: any) => void, req) => {
     try {
-      const { destination, username } = payload;
+      const { destination } = payload;
+
+      const username = generateFromEmail(
+        destination
+      )
 
       // Check if the user already exists
       let user = await prisma.user.findUnique({
