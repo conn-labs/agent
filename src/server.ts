@@ -1,17 +1,19 @@
 import express, { Express, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import session from 'express-session';
+import jwt from "jsonwebtoken"
 import morgan from 'morgan';
 import { createServer, Server as HttpServer } from 'http';
 import { WebSocket, WebSocketServer } from 'ws';
 import fs from 'fs';
 import path from 'path';
+import { magicLogin } from './api/controllers/authentication';
+import passport from 'passport';
 
 const app: Express = express();
 const server: HttpServer = createServer(app);
 const wss: WebSocketServer = new WebSocketServer({ server });
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -23,19 +25,44 @@ app.use(session({
   cookie: { secure: process.env.NODE_ENV === 'production' }
 }));
 
-// HTTP Routes
 app.get('/', (req: Request, res: Response) => {
   res.send('Welcome to the Bun-Express server with WebSocket routing!');
 });
 
+app.post("/api/auth", magicLogin.send)
 
-// WebSocket Types
+
+app.get(
+    "/auth/magiclogin/callback",
+    passport.authenticate("magiclogin"),
+    async (req, res) => {
+      // Log the authenticated user
+      console.log(req.user);
+  
+      // If the user is not authenticated, redirect to the verify endpoint
+      if (!req.user) {
+        return res.redirect(`${process.env.FRONTEND_URL}/api/verify`);
+      }
+  
+      const { username, destination, id } = req.user as any;
+  
+      // Generate a JWT token for the authenticated user
+      const token = await jwt.sign(
+        { email: destination, username, id },
+        process.env.SECRET || "PLACEHOLDER"
+      );
+  
+      // Redirect the user with the generated JWT token
+      return res.redirect(`${process.env.FRONTEND_URL}/api/verify?jwt=${token}`);
+    }
+  );
+
+  
+
 type WsHandler = (ws: WebSocket, data: any, clients: Set<WebSocket>) => void;
 
-// WebSocket Routing
 const wsRoutes: Map<string, WsHandler> = new Map();
 
-// Function to load WebSocket routes
 function loadWsRoutes(directory: string): void {
     const absolutePath = path.resolve(directory);
     console.log(`Attempting to load WebSocket routes from: ${absolutePath}`);
@@ -71,10 +98,8 @@ function loadWsRoutes(directory: string): void {
     console.log(`Loaded WebSocket routes: ${Array.from(wsRoutes.keys()).join(', ')}`);
   }
   
-  // Usage
   loadWsRoutes('./src/api/sockets');       
 
-// WebSocket connection handler
 wss.on('connection', (ws: WebSocket) => {
   console.log('A user connected');
 

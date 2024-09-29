@@ -19,7 +19,9 @@
     "@types/express": "^5.0.0",
     "@types/express-session": "^1.18.0",
     "@types/jsdom": "^21.1.7",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/morgan": "^1.9.9",
+    "@types/passport": "^1.0.16",
     "@types/uuid": "^10.0.0",
     "axios": "^1.7.7",
     "cheerio": "^1.0.0",
@@ -28,8 +30,11 @@
     "express-session": "^1.18.0",
     "hono": "^4.5.11",
     "jsdom": "^25.0.0",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "openai": "^4.58.2",
+    "passport": "^0.7.0",
+    "passport-magic-login": "^1.2.2",
     "playwright": "^1.47.0",
     "puppeteer": "^23.3.0",
     "puppeteer-extra": "^3.3.6",
@@ -37,5 +42,3 @@
     "uuid": "^10.0.0"
   }
 }
-
-
