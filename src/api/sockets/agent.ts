@@ -1,7 +1,10 @@
 
 import { WebSocket } from "ws";
+import { wsPayload } from "../../types/ws";
 
-export default function agentHandler(ws: WebSocket, data: any): void {
-    console.log(data)
-    ws.send(JSON.stringify({ route: "/agent", data }));
+export default async function agentHandler(ws: WebSocket, data: any): Promise<void> {
+    const payload = data as wsPayload;
+ 
+
 }
+
