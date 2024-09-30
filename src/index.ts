@@ -203,7 +203,7 @@ import { JSDOM } from "jsdom";
 //   performAction(page, { action: "click", element: "1" }, data);
 // })();
 
-import { executeAgent } from "./llm/browser/execute";
+import { executeAgent } from "./llm/browser/clients";
 await executeAgent(
   "go to claude ai and research how to write good prompts for AI models, and return a concise summary",
   "",
