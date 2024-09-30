@@ -19,7 +19,7 @@ model User {
 
 model ApiKey {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  key           String   
+  key           String   @unique
   description   String?  
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
