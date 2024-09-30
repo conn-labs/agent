@@ -9,13 +9,13 @@ import { wssLiveAgent } from "../../llm/browser/clients/ws.client";
 
 export default async function agentHandler(ws: WebSocket, data: any): Promise<void> {
     const payload = data as wsPayload;
-    
+    console.log(payload.authToken)
     const email = await validateJwtFromToken(payload.authToken);
     if (!email) {
         ws.send(JSON.stringify({ error: "Invalid authentication token" }));
         return;
     }
-
+   console.log(email)
     const user = await findUserByEmail(email);
     if (!user) {
         ws.send(JSON.stringify({ error: "User not found" }));

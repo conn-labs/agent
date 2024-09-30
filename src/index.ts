@@ -212,3 +212,6 @@ await executeAgent(
 
 // when trying to access gravitational waves ka wikipedia link, it first typed in gravitonal waves wikipedia in the search bar and then clicked on the wikipedia link that appeared in the search results. After that, it memorized the data from the page and then returned a concise summary of the page.
 // in cases such as conversing on chatgpt, it repeats the same question in the conversation as it doesn't beieve the page has changed(general problem in non url non ui changing pages)
+
+
+

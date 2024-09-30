@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 export async function validateJwt(req: Request): Promise<string | null> {
   const token = req.headers.authorization?.replace("Bearer ", "");
   if (!token) return null;
-  const data = (await jwt.decode(token)) as { email: string; userId: string };
+  const data = (await jwt.decode(token)) as { email: string };
   console.log("token", data);
 
   if (!data) return null;
@@ -11,7 +11,8 @@ export async function validateJwt(req: Request): Promise<string | null> {
 }
 
 export async function validateJwtFromToken(token: string): Promise<string | null> {
-  const data = (await jwt.decode(token)) as { email: string; userId: string };
+  if (!token) return null;
+  const data = (await jwt.decode(token)) as { email: string };
   console.log("token", data);
 
   if (!data) return null;

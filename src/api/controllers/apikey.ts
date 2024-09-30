@@ -6,6 +6,7 @@ import { generateApiKey } from "../../utils/apikey";
 
 export const createApiKey = async (req: Request, res: Response) => {
   const email = await validateJwt(req);
+
   const { description } = req.body;
   if (!email) {
     res.status(401).json({ error: "Unauthorized: Invalid or missing token" });

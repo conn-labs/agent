@@ -54,8 +54,11 @@ app.get(
       process.env.SECRET || "PLACEHOLDER",
     );
 
+    console.log(token)
+
     // Redirect the user with the generated JWT token
-    return res.redirect(`${process.env.FRONTEND_URL}/api/verify?jwt=${token}`);
+     res.redirect(`${process.env.FRONTEND_URL}/api/verify?jwt=${token}`);
+
   },
 );
 
