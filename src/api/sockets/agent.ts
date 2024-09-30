@@ -2,7 +2,7 @@
 import { WebSocket } from "ws";
 import { randomUUID } from "node:crypto";
 import { wsPayload } from "../../types/ws";
-import { validateJwt, validateJwtFromToken } from "../../common/validateJwt";
+import {  validateJwtFromToken } from "../../common/validateJwt";
 import { validateApiKeys } from "../../common/validateApikey";
 import { findUserByEmail } from "../../common/findUser";
 import { wssLiveAgent } from "../../llm/browser/clients/ws.client";
