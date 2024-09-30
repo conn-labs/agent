@@ -1,6 +1,6 @@
 //special websocket client for live preview.
 
-
+import { WebSocket } from "ws";
 import { BrowserInstance } from "../browser";
 import { Page } from "puppeteer";
 import { highlightAndLabelElements } from "../highlight";
@@ -17,6 +17,7 @@ export async function wssLiveAgent(
   input: string,
   context: string,
   sessionId: string,
+  ws: WebSocket,
 ) {
   const memeorizedText = new Set<string>();
 

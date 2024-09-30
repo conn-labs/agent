@@ -6,10 +6,10 @@ export async function validateApiKeys(key: string, userId: string): Promise<bool
   try {
     const apiKey = await prisma.apiKey.findUnique({
       where: {
-        userId_key: {
+       
           userId: userId,
           key: key
-        }
+        
       }
     });
 

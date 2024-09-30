@@ -9,3 +9,11 @@ export async function validateJwt(req: Request): Promise<string | null> {
   if (!data) return null;
   return data.email;
 }
+
+export async function validateJwtFromToken(token: string): Promise<string | null> {
+  const data = (await jwt.decode(token)) as { email: string; userId: string };
+  console.log("token", data);
+
+  if (!data) return null;
+  return data.email;
+}
