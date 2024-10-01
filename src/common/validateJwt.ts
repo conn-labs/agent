@@ -14,7 +14,9 @@ export async function validateJwt(req: Request): Promise<string | null> {
   }
 }
 
-export async function validateJwtFromToken(token: string): Promise<string | null> {
+export async function validateJwtFromToken(
+  token: string,
+): Promise<string | null> {
   try {
     const data = jwt.decode(token) as { email: string };
     if (!data) return null;

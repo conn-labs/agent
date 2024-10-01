@@ -1,6 +1,4 @@
-export const fromatterPrompt = 
-
-`
+export const fromatterPrompt = `
 
 
 
@@ -10,4 +8,4 @@ export const fromatterPrompt =
 
 
 
-`
+`;

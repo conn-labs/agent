@@ -23,10 +23,8 @@ export interface Elements {
   id: number;
 }
 
-
 export interface LinkInfo {
   tagName: string;
   faceValue: string;
   link: string;
 }
-

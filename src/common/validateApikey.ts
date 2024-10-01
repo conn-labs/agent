@@ -1,16 +1,15 @@
 import { prisma } from "../lib";
 
-
-
-export async function validateApiKeys(key: string, userId: string): Promise<boolean> {
+export async function validateApiKeys(
+  key: string,
+  userId: string,
+): Promise<boolean> {
   try {
     const apiKey = await prisma.apiKey.findUnique({
       where: {
-       
-          userId: userId,
-          key: key
-        
-      }
+        userId: userId,
+        key: key,
+      },
     });
 
     if (!apiKey) return false;
@@ -25,9 +24,3 @@ export async function validateApiKeys(key: string, userId: string): Promise<bool
     return false;
   }
 }
-
-
-
-
-
-

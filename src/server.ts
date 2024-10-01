@@ -10,9 +10,6 @@ import path from "path";
 import { magicLogin } from "./api/controllers/authentication";
 import passport from "passport";
 import { createApiKey } from "./api/controllers/apikey";
-import { validateJwtFromToken } from "./common/validateJwt";
-import { parseLinks } from "./common/htmlParser";
-
 const app: Express = express();
 const server: HttpServer = createServer(app);
 const wss: WebSocketServer = new WebSocketServer({ server });
@@ -56,11 +53,10 @@ app.get(
       process.env.SECRET || "PLACEHOLDER",
     );
 
-    console.log(token)
+    console.log(token);
 
     // Redirect the user with the generated JWT token
-     res.redirect(`${process.env.FRONTEND_URL}/api/verify?jwt=${token}`);
-
+    res.redirect(`${process.env.FRONTEND_URL}/api/verify?jwt=${token}`);
   },
 );
 
@@ -148,7 +144,6 @@ server.listen(PORT, async () => {
 
 // Graceful shutdown
 process.on("SIGINT", () => {
-
   console.log("Shutting down server...");
   server.close(() => {
     console.log("Server shut down");

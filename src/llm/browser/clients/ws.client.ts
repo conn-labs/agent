@@ -19,8 +19,7 @@ export async function wssLiveAgent(
   sessionId: string,
   ws: WebSocket,
 ) {
-
-  ws.send(JSON.stringify({ type: 'status', message: 'Agent is starting' }));
+  ws.send(JSON.stringify({ type: "status", message: "Agent is starting" }));
   const memeorizedText = new Set<string>();
 
   const browser = await BrowserInstance();
@@ -50,7 +49,9 @@ export async function wssLiveAgent(
         timeout: 5000,
       });
 
-      ws.send(JSON.stringify({ type: 'status', message: `Navigating to ${url}` }));
+      ws.send(
+        JSON.stringify({ type: "status", message: `Navigating to ${url}` }),
+      );
 
       await Promise.race([waitForEvent(page, "load"), sleep(5000)]);
 
@@ -66,7 +67,7 @@ export async function wssLiveAgent(
     }
 
     if (screenshotTaken) {
-      ws.send(JSON.stringify({ type: 'status', message: 'Taking screenshot' }));
+      ws.send(JSON.stringify({ type: "status", message: "Taking screenshot" }));
       messages.push({
         role: "user",
         content: [
@@ -105,7 +106,7 @@ export async function wssLiveAgent(
 
     if (data.success) {
       console.log(data.success);
-      ws.send(JSON.stringify({ type: 'status', message: data.success }));
+      ws.send(JSON.stringify({ type: "status", message: data.success }));
       break;
     }
     if (data.actions) {
@@ -116,17 +117,23 @@ export async function wssLiveAgent(
         elements,
       );
       if (data.actions && data.actions.length > 0) {
-        const actionDescription = data.actions[0].description || 'Performing an action';
-        ws.send(JSON.stringify({ type: 'status', message: actionDescription }));
+        const actionDescription =
+          data.actions[0].description || "Performing an action";
+        ws.send(JSON.stringify({ type: "status", message: actionDescription }));
       }
 
       await sleep(4000);
       const newUrl = await new URL(page.url());
 
       if (orignalUrl.toString() !== newUrl.toString()) {
-        ws.send(JSON.stringify({ type: 'status', message: 'URL changed, taking new screenshot' }));
+        ws.send(
+          JSON.stringify({
+            type: "status",
+            message: "URL changed, taking new screenshot",
+          }),
+        );
         elements = await highlightAndLabelElements(page);
-       
+
         await page.screenshot({
           path: `${sessionId}-${screenshotHash}.jpg`,
           fullPage: true,
@@ -141,10 +148,9 @@ export async function wssLiveAgent(
       console.log(newUrl.toString());
       console.log("Mem", mem);
     }
-    
   }
 
-  ws.close()
+  ws.close();
 }
 
 function compareUrls(url1: string, url2: string): boolean {
