@@ -4,9 +4,9 @@ import StealthPlugin from "puppeteer-extra-plugin-stealth";
 
 puppeteer.use(StealthPlugin());
 
-export async function BrowserInstance(): Promise<Browser> {
+export async function BrowserInstance(headless: boolean = false): Promise<Browser> {
   const browser: Browser = await puppeteer.launch({
-    headless: false,
+    headless,
     defaultViewport: {
       width: 1200,
       height: 1200,
@@ -15,3 +15,5 @@ export async function BrowserInstance(): Promise<Browser> {
   });
   return browser;
 }
+
+

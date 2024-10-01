@@ -7,7 +7,7 @@ export function validateAndFormatGraphQLQuery(queryString: string): string | nul
     let hasArguments = false;
 
     visit(ast, {
-      Argument(node: ArgumentNode) {
+      Argument(_: ArgumentNode) {
         hasArguments = true;
       },
       Field(node: FieldNode) {
@@ -22,14 +22,11 @@ export function validateAndFormatGraphQLQuery(queryString: string): string | nul
       return null;
     }
 
-    // If parsing succeeds and no arguments found, the query is valid
-    // Print the AST back to a string in a consistent format
+
     const formattedQuery = print(ast);
 
-    // Wrap the formatted query in the desired structure
     return `{ query ${formattedQuery} }`;
   } catch (error) {
-    // If parsing fails, the query is invalid
     console.error('Invalid GraphQL query:', error);
     return null;
   }
