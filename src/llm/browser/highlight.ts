@@ -147,3 +147,81 @@ export async function highlightAndLabelElements(
     return markPage();
   });
 }
+
+export async function highlightPage(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    function getElementRects(element: Element): Rect[] {
+      return [...element.getClientRects()].map((bb) => {
+        const rect = {
+          left: Math.max(0, bb.left + window.scrollX),  // Adjust for scroll position
+          top: Math.max(0, bb.top + window.scrollY),    // Adjust for scroll position
+          right: bb.right + window.scrollX,
+          bottom: bb.bottom + window.scrollY,
+        };
+        return {
+          ...rect,
+          width: rect.right - rect.left,
+          height: rect.bottom - rect.top,
+        };
+      });
+    }
+
+    function shouldIncludeElement(element: Element): boolean {
+      // Only include links (a elements) for highlighting
+      return element.tagName === "A";
+    }
+
+    function createHighlightElement(bbox: Rect): HTMLElement {
+      const borderColor = "hsl(240, 100%, 50%)"; // Single color (blue)
+
+      const newElement = document.createElement("div");
+      newElement.style.outline = `2px dashed ${borderColor}`;
+      newElement.style.position = "absolute";  // Absolute positioning for full page scroll coverage
+      newElement.style.left = `${bbox.left}px`;
+      newElement.style.top = `${bbox.top}px`;
+      newElement.style.width = `${bbox.width}px`;
+      newElement.style.height = `${bbox.height}px`;
+      newElement.style.pointerEvents = "none";
+      newElement.style.boxSizing = "border-box";
+      newElement.style.zIndex = "2147483647";
+
+      return newElement;
+    }
+
+    function markPage(): void {
+      // Unmark existing highlights
+      const existingLabels = document.querySelectorAll(
+        'div[style*="outline"][style*="position: absolute"]',
+      );
+      existingLabels.forEach((label) => document.body.removeChild(label));
+
+      const items: Item[] = Array.from(document.querySelectorAll("*"))
+        .map((element) => {
+          const rects = getElementRects(element);
+          const area = rects.reduce(
+            (acc, rect) => acc + rect.width * rect.height,
+            0,
+          );
+
+          return {
+            element,
+            include: shouldIncludeElement(element),
+            area,
+            rects,
+            text: element.textContent || ''
+          };
+        })
+        .filter((item) => item.include && item.area >= 20); // Include only valid items
+
+      // Add highlights for filtered elements
+      items.forEach((item) => {
+        item.rects.forEach((bbox) => {
+          const highlightElement = createHighlightElement(bbox);
+          document.body.appendChild(highlightElement);
+        });
+      });
+    }
+
+    markPage();
+  });
+}
