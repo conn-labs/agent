@@ -22,3 +22,11 @@ export interface Elements {
   bboxs: [number, number, number, number][];
   id: number;
 }
+
+
+export interface LinkInfo {
+  tagName: string;
+  faceValue: string;
+  link: string;
+}
+

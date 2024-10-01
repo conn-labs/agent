@@ -11,6 +11,7 @@ import { magicLogin } from "./api/controllers/authentication";
 import passport from "passport";
 import { createApiKey } from "./api/controllers/apikey";
 import { validateJwtFromToken } from "./common/validateJwt";
+import { parseLinks } from "./common/htmlParser";
 
 const app: Express = express();
 const server: HttpServer = createServer(app);
@@ -147,6 +148,7 @@ server.listen(PORT, async () => {
 
 // Graceful shutdown
 process.on("SIGINT", () => {
+
   console.log("Shutting down server...");
   server.close(() => {
     console.log("Server shut down");
