@@ -5,6 +5,7 @@ import { prisma } from "../../lib";
 import { generateApiKey } from "../../utils/apikey";
 
 export const createApiKey = async (req: Request, res: Response) => {
+  
   const email = await validateJwt(req);
 
   const { description } = req.body;

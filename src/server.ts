@@ -10,6 +10,7 @@ import path from "path";
 import { magicLogin } from "./api/controllers/authentication";
 import passport from "passport";
 import { createApiKey } from "./api/controllers/apikey";
+import { validateJwtFromToken } from "./common/validateJwt";
 
 const app: Express = express();
 const server: HttpServer = createServer(app);
@@ -139,7 +140,9 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 const PORT: number = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 
-server.listen(PORT, () => {
+server.listen(PORT, async () => {
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFwb29ydi5jb25uQGdtYWlsLmNvbSIsInVzZXJuYW1lIjoiYXBvb3J2Y29ubiIsImlkIjoiNjZmOWM4MzQzZjg3Y2MwNWRkOGZjMWIyIiwiaWF0IjoxNzI3NzI4NzQ4fQ.NrieUowAq3fwjOx04ffssvih9rYrMS4gdzOiabZjRpY"
+  console.log(await validateJwtFromToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFwb29ydi5jb25uQGdtYWlsLmNvbSIsInVzZXJuYW1lIjoiYXBvb3J2Y29ubiIsImlkIjoiNjZmOWM4MzQzZjg3Y2MwNWRkOGZjMWIyIiwiaWF0IjoxNzI3NzI4NzQ4fQ.NrieUowAq3fwjOx04ffssvih9rYrMS4gdzOiabZjRpY"))
   console.log(`Server is running on http://localhost:${PORT}`);
   console.log(`WebSocket server is running on ws://localhost:${PORT}`);
 });

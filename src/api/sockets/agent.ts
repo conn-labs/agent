@@ -15,7 +15,6 @@ export default async function agentHandler(ws: WebSocket, data: any): Promise<vo
         ws.send(JSON.stringify({ error: "Invalid authentication token" }));
         return;
     }
-    console.log(email)
     const user = await findUserByEmail(email);
     if (!user) {
         ws.send(JSON.stringify({ error: "User not found" }));
