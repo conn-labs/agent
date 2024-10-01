@@ -2,6 +2,7 @@ import { sleep } from "bun";
 import { BrowserInstance } from "../browser";
 import { waitForEvent } from "../event";
 import { highlightPage } from "../highlight";
+import { parseLinksFromHtml } from "../../../common/htmlParser";
 
 export async function webScrapperAgent(
   url: string,
@@ -24,6 +25,9 @@ export async function webScrapperAgent(
     path: `abc.jpeg`,
     fullPage: true,
   });
+
+  const links = await parseLinksFromHtml(url);
+  console.log(links)
  
   console.log("fun")
 

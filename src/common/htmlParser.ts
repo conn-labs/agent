@@ -10,8 +10,8 @@ export async function parseLinksFromHtml(url: string): Promise<LinkInfo[]> {
     const dom = new JSDOM(html);
     const document = dom.window.document;
 
-    const links: LinkInfo[] = Array.from(document.querySelectorAll("a")).map(
-      (element) => {
+    const links: LinkInfo[] = Array.from(document.querySelectorAll("a"))
+      .map((element) => {
         let href = element.getAttribute("href") || "";
 
         if (
@@ -22,13 +22,18 @@ export async function parseLinksFromHtml(url: string): Promise<LinkInfo[]> {
           href = new URL(href, url).href;
         }
 
+        const faceValue = element.textContent?.trim() || "";
+
+        if (element.tagName.toLowerCase() === "" || !faceValue) return null;
+
         return {
           tagName: element.tagName.toLowerCase(),
-          faceValue: element.textContent?.trim() || "",
+          faceValue,
           link: href,
         };
-      },
-    );
+      })
+      .filter((link): link is LinkInfo => link !== null);
+    
     return links;
   } catch (error) {
     console.error("Error fetching or parsing the webpage:", error);
