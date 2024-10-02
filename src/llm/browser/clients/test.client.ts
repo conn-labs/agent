@@ -10,11 +10,12 @@ import { Elements } from "../../../types/browser";
 import { imgToBase64 } from "../../../utils/img";
 import { AgentAction } from "../../../types/action";
 
+ 
 export async function executeAgent(
   input: string,
-  context: string,
+  context: string,      
   sessionId: string,
-) {
+)  {
   const memeorizedText = new Set<string>();
 
   const browser = await BrowserInstance();

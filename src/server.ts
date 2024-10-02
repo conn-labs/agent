@@ -10,7 +10,7 @@ import path from "path";
 import { magicLogin } from "./api/controllers/authentication";
 import passport from "passport";
 import { createApiKey } from "./api/controllers/apikey";
-import { webScrapperAgent } from "./llm/browser/clients";
+import { webScraperAgent } from "./llm/browser/clients";
 const app: Express = express();
 const server: HttpServer = createServer(app);
 const wss: WebSocketServer = new WebSocketServer({ server });
@@ -139,7 +139,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 const PORT: number = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 
 server.listen(PORT, async () => {
-  webScrapperAgent("https://www.flipkart.com/search?q=beyblade&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off", "", "")
+  webScraperAgent("https://www.flipkart.com/search?q=beyblade&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off", "", "")
   console.log(`Server is running on http://localhost:${PORT}`);
   console.log(`WebSocket server is running on ws://localhost:${PORT}`);
 });
