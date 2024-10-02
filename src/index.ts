@@ -205,7 +205,7 @@ import { JSDOM } from "jsdom";
 
 import { executeAgent } from "./llm/browser/clients";
 await executeAgent(
-  "go to claude ai and research how to write good prompts for AI models, and return a concise summary",
+  `Find the top comment of the top post on Hackernews.`,
   "",
   "one",
 );
