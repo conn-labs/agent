@@ -1,6 +1,6 @@
 import store from "store"
 import { OAuth2Client } from 'google-auth-library';
-
+import Cryptr from "cryptr";
 import { saveAuthentication } from '../../common/saveProvider';
 
 import { prisma } from "../../lib";
@@ -8,6 +8,7 @@ import { Provider } from "@prisma/client";
 import { Request, Response } from "express";
 
 
+const crypt = new Cryptr(process.env.ENCRYPT || "RANDOM")
 const CLIENT_ID =  process.env.GOOGLE_ID || 'YOUR_GOOGLE_CLIENT_ID';
 const CLIENT_SECRET = process.env.GOOGLE_SECRET || 'YOUR_GOOGLE_CLIENT_SECRET';
 const REDIRECT_URI = 'http://localhost:8080/auth/google/callback';
@@ -61,9 +62,9 @@ const oauth2Client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
       // Save authentication
       const authentication = await saveAuthentication(
         Provider.GOOGLE,
-        tokens.access_token!,
+       crypt.encrypt(tokens.access_token!),
         user.id,
-        tokens.refresh_token || null
+        crypt.encrypt(tokens.refresh_token || "Not Applicable") || null
       );
   
       return { user, authentication };
@@ -90,7 +91,8 @@ export const GoogleRedirect = async (req: Request, res: Response) => {
 export const GoogleCallback = async (req: Request, res: Response) => {
     const code = req.query.code as string;
     if (!code) {
-        return res.status(400).send('Missing authorization code');
+         res.status(400).send('Missing authorization code');
+         return
       }
 
       try {

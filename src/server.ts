@@ -11,6 +11,7 @@ import { magicLogin } from "./api/controllers/authentication";
 import passport from "passport";
 import { createApiKey } from "./api/controllers/apikey";
 import { webScraperAgent } from "./llm/browser/clients";
+import { GoogleRedirect, GoogleCallback } from "./api/controllers/google";
 const app: Express = express();
 const server: HttpServer = createServer(app);
 const wss: WebSocketServer = new WebSocketServer({ server });
@@ -62,6 +63,10 @@ app.get(
 );
 
 app.post("/api/keys", createApiKey);
+
+app.get("/auth/google", GoogleRedirect)
+
+app.get("/auth/google/callback", GoogleCallback);
 
 type WsHandler = (ws: WebSocket, data: any, clients: Set<WebSocket>) => void;
 
