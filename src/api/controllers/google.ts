@@ -3,9 +3,9 @@ import { OAuth2Client } from 'google-auth-library';
 
 import { saveAuthentication } from '../../common/saveProvider';
 
-import { findUserByEmail } from "../../common/findUser";
 import { prisma } from "../../lib";
 import { Provider } from "@prisma/client";
+import { Request, Response } from "express";
 
 
 const CLIENT_ID =  process.env.GOOGLE_ID || 'YOUR_GOOGLE_CLIENT_ID';
@@ -15,7 +15,7 @@ const REDIRECT_URI = 'http://localhost:8080/auth/google/callback';
 const oauth2Client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
 
-export async function initiateGoogleAuth() {
+ async function initiateGoogleAuth() {
     const authUrl = oauth2Client.generateAuthUrl({
       access_type: 'offline',
       scope: [ "https://www.googleapis.com/auth/userinfo.profile",
@@ -33,7 +33,7 @@ export async function initiateGoogleAuth() {
 
 
 
-export async function handleGoogleCallback(code: string) {
+ async function handleGoogleCallback(code: string) {
     try {
       // Exchange the code for tokens
       const { tokens } = await oauth2Client.getToken(code);
@@ -72,3 +72,38 @@ export async function handleGoogleCallback(code: string) {
       throw error;
     }
   } 
+
+
+export const GoogleRedirect = async (req: Request, res: Response) => {
+    const email = req.query.email
+    if (!email) {
+        res.status(400).json({ error: "Email is required" });
+        res.redirect("/")
+        return;
+    }
+
+    const auth = await initiateGoogleAuth()
+    res.redirect(auth);
+}
+
+
+export const GoogleCallback = async (req: Request, res: Response) => {
+    const code = req.query.code as string;
+    if (!code) {
+        return res.status(400).send('Missing authorization code');
+      }
+
+      try {
+        const { user, authentication } = await handleGoogleCallback(code);
+        
+        // Here you might set up a session or generate a JWT
+        res.json({ message: 'Authentication successful', userId: user.id });
+        
+      } catch (error) {
+        console.error('Error in Google callback:', error);
+        res.status(500).send('Authentication failed');
+      }
+
+    
+
+}
