@@ -19,7 +19,6 @@ async function saveAuthentication(
       update: {
         accessToken,
         refreshToken,
-        updatedAt: new Date()
       },
       create: {
         provider,
