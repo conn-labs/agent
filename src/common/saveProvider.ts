@@ -1,0 +1,39 @@
+import {  Provider, Authentication } from '@prisma/client'
+
+import {prisma} from "../lib"
+
+async function saveAuthentication(
+  provider: Provider,
+  accessToken: string,
+  userId: string,
+  refreshToken?: string | null
+): Promise<Authentication> {
+  try {
+    const authentication = await prisma.authentication.upsert({
+      where: {
+        userId_provider: {
+          userId,
+          provider
+        }
+      },
+      update: {
+        accessToken,
+        refreshToken,
+        updatedAt: new Date()
+      },
+      create: {
+        provider,
+        accessToken,
+        refreshToken,
+        user: { connect: { id: userId } }
+      }
+    })
+
+    return authentication
+  } catch (error) {
+    console.error('Error saving authentication:', error)
+    throw error
+  }
+}
+
+export { saveAuthentication }
