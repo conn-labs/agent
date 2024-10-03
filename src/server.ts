@@ -144,7 +144,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 const PORT: number = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 
 server.listen(PORT, async () => {
-  webScraperAgent("https://www.flipkart.com/search?q=beyblade&otracker=search&otracker1=search&marketplace=FLIPKART&as-show=on&as=off", "", "")
   console.log(`Server is running on http://localhost:${PORT}`);
   console.log(`WebSocket server is running on ws://localhost:${PORT}`);
 });

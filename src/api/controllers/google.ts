@@ -17,9 +17,11 @@ const oauth2Client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
 
  async function initiateGoogleAuth() {
+    console.log(CLIENT_ID, CLIENT_SECRET)
     const authUrl = oauth2Client.generateAuthUrl({
       access_type: 'offline',
-      scope: [ "https://www.googleapis.com/auth/userinfo.profile",
+      scope: [ 
+        "https://www.googleapis.com/auth/userinfo.profile",
         "https://www.googleapis.com/auth/userinfo.email",
         "https://www.googleapis.com/auth/calendar",
         "https://www.googleapis.com/auth/documents",
