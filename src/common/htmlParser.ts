@@ -13,7 +13,6 @@ export async function parseLinksFromHtml(url: string): Promise<LinkInfo[]> {
     const links: LinkInfo[] = Array.from(document.querySelectorAll("a"))
       .map((element) => {
         let href = element.getAttribute("href") || "";
-
         if (
           href &&
           !href.startsWith("http://") &&
