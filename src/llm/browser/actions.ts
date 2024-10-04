@@ -61,40 +61,42 @@ export async function executeAgentAction(
   page: Page,
   actions: AgentAction[],
   elements: Elements[],
-): Promise<String | null | undefined> {
+): Promise<string | null> {
   for (const action of actions) {
-    {
-      switch (action.action) {
-        case "click":
-          const element = await findElement(
-            elements,
-            Number(action.elementId) || 0,
-          );
-          if (element) {
-            await eventClick(page, element.x, element.y);
-            return "clicked";
-          }
-          break;
-        case "type":
-          const typeelement = await findElement(
-            elements,
-            Number(action.elementId) || 0,
-          );
-          if (!typeelement) break;
-          await eventClick(page, typeelement.x, typeelement.y);
-          await eventType(page, action.text || "");
-          return "typed";
-        case "scroll":
-          const scrollelement = await findElement(
-            elements,
-            Number(action.elementId) || 0,
-          );
-          if (!scrollelement) break;
-          await scrollToElement(page, scrollelement.x, scrollelement.y);
-          return "scrolled";
-        case "memorize":
-          return action.text || null;
+    switch (action.action) {
+      case "click": {
+        const element = await findElement(
+          elements,
+          Number(action.elementId) || 0,
+        );
+        if (element) {
+          await eventClick(page, element.x, element.y);
+          return "clicked";
+        }
+        break;
       }
+      case "type": {
+        const typeElement = await findElement(
+          elements,
+          Number(action.elementId) || 0,
+        );
+        if (!typeElement) break;
+        await eventClick(page, typeElement.x, typeElement.y);
+        await eventType(page, action.text || "");
+        return "typed";
+      }
+      case "scroll": {
+        const scrollElement = await findElement(
+          elements,
+          Number(action.elementId) || 0,
+        );
+        if (!scrollElement) break;
+        await scrollToElement(page, scrollElement.x, scrollElement.y);
+        return "scrolled";
+      }
+      case "memorize":
+        return action.text || null;
     }
   }
+  return null;
 }

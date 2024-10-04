@@ -1,5 +1,6 @@
 import express, { Express, Request, Response, NextFunction } from "express";
 import cors from "cors";
+import { config } from "dotenv";
 import session from "express-session";
 import jwt from "jsonwebtoken";
 import morgan from "morgan";
@@ -10,12 +11,12 @@ import path from "path";
 import { magicLogin } from "./api/controllers/authentication";
 import passport from "passport";
 import { createApiKey } from "./api/controllers/apikey";
-import { webScraperAgent } from "./llm/browser/clients";
 import { GoogleRedirect, GoogleCallback } from "./api/controllers/google";
 const app: Express = express();
 const server: HttpServer = createServer(app);
 const wss: WebSocketServer = new WebSocketServer({ server });
 
+config();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -150,7 +151,7 @@ server.listen(PORT, async () => {
 
 // Graceful shutdown
 process.on("SIGINT", () => {
-  
+
   console.log("Shutting down server...");
   server.close(() => {
     console.log("Server shut down");

@@ -1,5 +1,6 @@
 import { JSDOM } from "jsdom";
-
+import { config } from "dotenv";
+config()
 // interface Rect {
 //   left: number;
 //   top: number;
@@ -204,7 +205,8 @@ import { JSDOM } from "jsdom";
 // })();
 
 import { executeAgent } from "./llm/browser/clients";
-await executeAgent(
+
+ executeAgent(
   `Find the top comment of the top post on Hackernews.`,
   "",
   "one",
