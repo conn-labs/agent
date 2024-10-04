@@ -3,7 +3,10 @@
   "scripts": {
     "dev": "tsx ./src/index.ts",
     "server": "tsx src/server.ts",
-    "db": "npx prisma generate"
+    "db": "npx prisma generate",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "docker": "docker build -t pearl ."
   },
   "peerDependencies": {},
   "dependencies": {

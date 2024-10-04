@@ -1,4 +1,4 @@
-import { sleep } from "bun";
+import { sleep } from "../../../utils/sleep";
 import { BrowserInstance } from "../browser";
 import { waitForEvent } from "../event";
 import { highlightPage } from "../highlight";
