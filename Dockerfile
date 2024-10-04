@@ -1,5 +1,5 @@
-# Stage 1: Build the application
-FROM node:20 AS build
+# Use Node.js 20 as the base image
+FROM node:20
 
 # Set the working directory
 WORKDIR /app
@@ -7,32 +7,23 @@ WORKDIR /app
 # Copy package.json and package-lock.json (or yarn.lock)
 COPY package*.json ./
 
-# Install dependencies
+# Install dependencies including dev dependencies
 RUN npm install
 
-# Copy the rest of the application code
+# Copy the entire project directory
 COPY . .
 
-RUN npm run db
+# Explicitly copy the .EN file
+COPY .ENV ./
 
-# Compile TypeScript code
-RUN npm run build
+# Generate Prisma client
+RUN npx prisma generate
 
-# Stage 2: Create the production image
-FROM node:20-alpine AS production
-
-# Set the working directory
-WORKDIR /app
-
-# Copy compiled files and dependencies from the build stage
-COPY --from=build /app/package*.json ./
-COPY --from=build /app/dist ./dist
-
-# Install only production dependencies
-RUN npm install --only=production
+# Install tsx globally
+RUN npm install -g tsx
 
 # Expose the port your app runs on
 EXPOSE 3000
 
-# Start the application
-CMD ["node", "dist/microservice.js"]
+# Start the application using tsx
+CMD ["tsx", "src/server.ts"]

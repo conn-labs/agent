@@ -1,4 +1,3 @@
-import store from "store"
 import { OAuth2Client } from 'google-auth-library';
 import Cryptr from "cryptr";
 import { saveAuthentication } from '../../common/saveProvider';

@@ -3,7 +3,9 @@ export enum Fields {
     ID = "id",
     CONTENT = "content",
     LINK ="link",
-    TIME = "time"
+    CREATEDAT = "createdat",
+    UPDATEDAT = "updatedat",
+    AUTHORS = "authors"
 }
 
 

@@ -1,4 +1,4 @@
-import { Authentication, Provider } from "@prisma/client";
+import {  Provider } from "@prisma/client";
 import { prisma } from "../lib";
 import Cryptr from "cryptr";
 
