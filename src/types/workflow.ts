@@ -1,12 +1,11 @@
-
 export enum Fields {
     ID = "id",
     CONTENT = "content",
-    LINK ="link",
-    CREATEDAT = "createdat",
-    UPDATEDAT = "updatedat",
-    AUTHORS = "authors"
-}
+    LINK = "link",
+    CREATEDAT = "createdAt",
+    UPDATEDAT = "updatedAt",
+    AUTHORS = "authors",
+  }
 
 
 export enum Provider {

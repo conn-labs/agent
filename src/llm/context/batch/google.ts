@@ -1,18 +1,11 @@
 import { google } from "googleapis/build/src";
 import { drive_v3 } from "googleapis/build/src/apis/drive/v3";
-
+import { Fields } from "../../../types/workflow";
 const CLIENT_ID = process.env.GOOGLE_ID || 'YOUR_GOOGLE_CLIENT_ID';
 const CLIENT_SECRET = process.env.GOOGLE_SECRET || 'YOUR_GOOGLE_CLIENT_SECRET';
 const REDIRECT_URI = 'http://localhost:8080/auth/google/callback';
 
-export enum Fields {
-  ID = "id",
-  CONTENT = "content",
-  LINK = "link",
-  CREATEDAT = "createdat",
-  UPDATEDAT = "updatedat",
-  AUTHORS = "authors",
-}
+
 
 interface FileDetails {
   [Fields.ID]: string;
