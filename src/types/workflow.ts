@@ -18,7 +18,7 @@ export enum Provider {
 
 interface Context {
     provider: string
-    fields: Fields,
+    fields: Fields[],
     id?: string
     instructions?: string
 }
@@ -41,5 +41,32 @@ export interface AgentWorkflow {
     memory: boolean;
     proMode: boolean;
     cron?: string;
-    event: Event
+    event?: Event
 }
+
+
+
+import { z } from "zod";
+
+export const WorkflowJobSchema = z.object({
+    input: z.string(),                    
+    context: z.array(z.object({              
+        provider: z.string(),
+        fields: z.enum(["id", "content", "link", "time"]).array(),
+        id: z.string().optional(),
+        instructions: z.string().optional(),
+    })),
+    instances: z.number().int(),            
+    memory: z.boolean(),                     
+    proMode: z.boolean(),                   
+    event: z.enum([                        
+        "on-gmail", 
+        "on-gmail-received", 
+        "on-google-calendar-event", 
+        "on-google-calendar-create", 
+        "on-google-docs-create", 
+        "on-google-sheets-create", 
+        "on-google-meet-start"
+    ]),
+    cron: z.string().optional()            
+});
