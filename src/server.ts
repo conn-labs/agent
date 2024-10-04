@@ -150,6 +150,7 @@ server.listen(PORT, async () => {
 
 // Graceful shutdown
 process.on("SIGINT", () => {
+  
   console.log("Shutting down server...");
   server.close(() => {
     console.log("Server shut down");

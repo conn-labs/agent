@@ -162,6 +162,7 @@ dist
 
 # yarn v2
 
+*.jpeg
 .yarn/cache
 .yarn/unplugged
 .yarn/build-state.yml
