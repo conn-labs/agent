@@ -7,21 +7,14 @@ const REDIRECT_URI = 'http://localhost:8080/auth/google/callback';
 
 
 
-interface FileDetails {
-  [Fields.ID]: string;
-  [Fields.CONTENT]: string;
-  [Fields.LINK]: string;
-  [Fields.CREATEDAT]: string;
-  [Fields.UPDATEDAT]: string;
-  [Fields.AUTHORS]?: string;
-}
+import {workflowContext} from "../../../types/workflow"
 
 // Helper for Google Drive Links
 const createDriveLink = (fileId: string): string =>
   `https://drive.google.com/file/d/${fileId}/view`;
 
 // 1. Get Google Doc Content
-async function getGoogleDocContext(accessToken: string, refreshToken: string): Promise<FileDetails[]> {
+async function getGoogleDocContext(accessToken: string, refreshToken: string): Promise<workflowContext[]> {
   const client = await getGoogleAuthClient(accessToken, refreshToken);
   const drive = google.drive({ version: "v3", auth: client });
 
@@ -32,7 +25,7 @@ async function getGoogleDocContext(accessToken: string, refreshToken: string): P
   const files = response.data.files;
   if (!files || files.length === 0) return [];
 
-  const docsArray: Promise<FileDetails>[] = files.reverse().slice(0, 10).map(async (file: drive_v3.Schema$File) => {
+  const docsArray: Promise<workflowContext>[] = files.reverse().slice(0, 10).map(async (file: drive_v3.Schema$File) => {
     const content = await getGoogleDocContent(file.id || "", drive);
     return {
       [Fields.ID]: file.id || "",
@@ -63,7 +56,7 @@ async function getGoogleDocContent(
 }
 
 // 2. Get Google Calendar Events
-async function getGoogleCalendarEvents(accessToken: string, refreshToken: string): Promise<FileDetails[]> {
+async function getGoogleCalendarEvents(accessToken: string, refreshToken: string): Promise<workflowContext[]> {
   const client = await getGoogleAuthClient(accessToken, refreshToken);
   const calendar = google.calendar({ version: "v3", auth: client });
 
@@ -88,7 +81,7 @@ async function getGoogleCalendarEvents(accessToken: string, refreshToken: string
 }
 
 // 3. Get All Google Sheets
-async function getAllGoogleSheets(accessToken: string, refreshToken: string): Promise<FileDetails[]> {
+async function getAllGoogleSheets(accessToken: string, refreshToken: string): Promise<workflowContext[]> {
   const client = await getGoogleAuthClient(accessToken, refreshToken);
   const drive = google.drive({ version: "v3", auth: client });
 
@@ -136,7 +129,7 @@ async function getGoogleSheetContent(
 }
 
 // 4. Get All Drive Files (General)
-async function getAllDriveFiles(accessToken: string, refreshToken: string): Promise<FileDetails[]> {
+async function getAllDriveFiles(accessToken: string, refreshToken: string): Promise<workflowContext[]> {
   const client = await getGoogleAuthClient(accessToken, refreshToken);
   const drive = google.drive({ version: "v3", auth: client });
 
@@ -157,7 +150,7 @@ async function getAllDriveFiles(accessToken: string, refreshToken: string): Prom
 }
 
 // 5. Get Latest Emails
-async function getLatestEmails(accessToken: string, refreshToken: string): Promise<FileDetails[]> {
+async function getLatestEmails(accessToken: string, refreshToken: string): Promise<workflowContext[]> {
   const client = await getGoogleAuthClient(accessToken, refreshToken);
   const gmail = google.gmail({ version: "v1", auth: client });
 

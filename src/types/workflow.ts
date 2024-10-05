@@ -44,7 +44,14 @@ export interface AgentWorkflow {
     event?: Event
 }
 
-
+export interface workflowContext {
+    [Fields.ID]: string;
+    [Fields.CONTENT]: string;
+    [Fields.LINK]: string;
+    [Fields.CREATEDAT]: string;
+    [Fields.UPDATEDAT]: string;
+    [Fields.AUTHORS]?: string;
+  }
 
 import { z } from "zod";
 
