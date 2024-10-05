@@ -1,4 +1,3 @@
-import { JSDOM } from "jsdom";
 import { config } from "dotenv";
 config()
 // interface Rect {
@@ -207,7 +206,7 @@ config()
 import { executeAgent } from "./llm/browser/clients";
 
  executeAgent(
-  `Find the top comment of the top post on Hackernews.`,
+  `go to google.com search hello kitty`,
   "",
   "one",
 );

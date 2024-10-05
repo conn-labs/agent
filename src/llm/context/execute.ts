@@ -23,6 +23,7 @@ export async function getContext(
     if (!func) {
         throw new Error(`Unsupported provider: ${provider}`);
     }
+    
 
     const result = await func(accessToken, refreshToken);
 

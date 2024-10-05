@@ -4,6 +4,7 @@ import { Elements, Item, Rect } from "../../types/browser";
 export async function highlightAndLabelElements(
   page: Page,
 ): Promise<Elements[]> {
+  
   return await page.evaluate(() => {
     function getElementRects(element: Element, vw: number, vh: number): Rect[] {
       return [...element.getClientRects()]
@@ -143,9 +144,11 @@ export async function highlightAndLabelElements(
         ),
       }));
     }
+    console.log("done")
 
     return markPage();
   });
+
 }
 
 export async function highlightPage(page: Page): Promise<void> {
