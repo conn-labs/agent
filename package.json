@@ -1,14 +1,15 @@
 {
   "name": "agent",
-  "scripts": {
-    "dev": "tsx ./src/index.ts",
-    "server": "tsx src/server.ts",
-    "db": "npx prisma generate",
-    "build": "tsc",
-    "start": "node dist/server.js",
-    "docker": "docker build -t pearl ."
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
   },
-  "peerDependencies": {},
+  "scripts": {
+    "dev": "bun run src/index.ts",
+    "db": "npx prisma generate",
+    "server": "bun run src/server.ts"
+  },
   "dependencies": {
     "@prisma/client": "^5.19.1",
     "@types/cheerio": "^0.22.35",
@@ -51,13 +52,7 @@
     "uuid": "^10.0.0",
     "ws": "^8.18.0"
   },
-  "version": "1.0.0",
-  "main": "index.js",
-  "repository": "https://github.com/conn-labs/agent",
-  "author": "<tofu.develops@gmail.com>",
-  "license": "MIT",
-  "devDependencies": {
-    "tsx": "^4.19.1",
-    "typescript": "^5.6.2"
+  "peerDependencies": {
+    "typescript": "^5.0.0"
   }
 }

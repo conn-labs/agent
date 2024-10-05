@@ -12,7 +12,6 @@ export enum Provider {
     GOOGLE_MEET = "google-meet",
     GOOGLE_CALENDAR = "google-calendar",
     GOOGLE_DOCS = "google-docs",
-    GOOGLE_DRIVE = "google-drive",
     GOOGLE_SHEETS = "google-sheets",
     GOOGLE_GMAIL = "google-gmail"
 }
@@ -50,15 +49,15 @@ export interface AgentWorkflow {
 import { z } from "zod";
 
 export const WorkflowJobSchema = z.object({
-    input: z.string(),                    
+    input: z.string(),      //done               
     context: z.array(z.object({              
         provider: z.string(),
         fields: z.enum(["id", "content", "link", "time"]).array(),
         id: z.string().optional(),
         instructions: z.string().optional(),
-    })),
-    instances: z.number().int(),            
-    memory: z.boolean(),                     
+    })), //done 
+    instances: z.number().int(),     //todo       
+    memory: z.boolean(),     //todo                 
     proMode: z.boolean(),                   
     event: z.enum([                        
         "on-gmail", 
@@ -68,6 +67,6 @@ export const WorkflowJobSchema = z.object({
         "on-google-docs-create", 
         "on-google-sheets-create", 
         "on-google-meet-start"
-    ]),
+    ]), //todo
     cron: z.string().optional()            
 });

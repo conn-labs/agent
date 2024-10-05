@@ -1,6 +1,7 @@
-import {  Provider, Authentication } from '@prisma/client'
+import { Provider } from '@prisma/client';
+import type { Authentication } from '@prisma/client'; // Type-only import   
 
-import {prisma} from "../lib"
+import { prisma } from "../lib"
 
 async function saveAuthentication(
   provider: Provider,
