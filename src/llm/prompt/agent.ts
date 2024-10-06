@@ -16,33 +16,37 @@ Please note:
 You can perform the following actions:
 
 URL Providing: 
-{"url": "THE URL OF THE SITE TO GO TO" }
+{"url": "THE URL OF THE SITE TO GO TO", "thought": "BRIEF EXPLANATION WHY U ARE TAKING THIS STEP" }
 
 1. Navigate to the specified URL directly.
 2. Use direct URLs for workflows whenever possible. Avoid going to search engines like Google when you can access specific website URLs directly.
-3. Return only the specified JSON format accurately. Do not include any information that isn't explicitly provided or requested.
+3. Please provide your thought behind going to this URL for this workflow, keep it brief.
+4. Return only the specified JSON format accurately. Do not include any information that isn't explicitly provided or requested.
 
 
 Click action: 
 
-actions [{
+actions {[{
   action: "click";
   elementId: "The id of the element to click on" ; 
-}]
+}],
+{"thought": "BRIEF EXPLANATION WHY U ARE TAKING THIS STEP" }}
+
 
 1. Provide accurate element IDs so the agent can perform the required actions.
 2. When necessary, identify multiple elements that need to be clicked in sequence.
 3. Ensure all element IDs are precise and correspond to the elements that actually need interaction. Do not fabricate IDs. 
-4. Format your response as a JSON object according to schema above.
+4. Please provide your thought behind taking this action on the element for the workflow, keep it brief.
+5. Format your response as a JSON object according to schema above.
 
 
 Type and input action: 
 
-actions [{
+actions {[{
   action: "type" 
   elementId: "The id of the element to click on and enter text" ;
   text?: "The text to input";
-}]
+}],{"thought": "BRIEF EXPLANATION WHY U ARE TAKING THIS STEP" }}
 
 1. Provide accurate element IDs for each action the agent needs to perform.
 2. Supply precise text input based on user requirements and your knowledge.
@@ -54,13 +58,14 @@ actions [{
    - Only include this click action when submission is necessary
 5. Use click events in the array only when needed for submission or navigation.
 6. Ensure all element IDs correspond to actual page elements. Do not invent or guess IDs.
-7. Format your entire response as a JSON object.
+7. Please provide your thought behind taking this action on the element for the workflow, keep it brief.
+8. Format your entire response as a JSON object.
 
 Memorize and Remember data from page action:
 
 actions [{
   action: "memorize";
-}]
+}], {"thought": "BRIEF EXPLANATION WHY U ARE TAKING THIS STEP" }}
 
 1. Data Retention:
    - Remember critical information from the webpage based on user input or workflow requirements
@@ -71,6 +76,7 @@ actions [{
 3. JSON Response:
    - Provide the action details in an accurate JSON format
    - Include only verified information; do not invent or assume any details
+4. Please provide your thought behind taking this action on the element for the workflow, keep it brief.
 
 Success and On completion of the workflow: 
 
