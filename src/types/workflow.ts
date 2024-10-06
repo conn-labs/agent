@@ -30,6 +30,8 @@ export interface AgentWorkflow {
     instances: number;
     memory: boolean;
     proMode: boolean;
+    email: string;
+    apiKey: string;
 }
 
 export interface workflowContext {
@@ -44,14 +46,16 @@ export interface workflowContext {
 import { z } from "zod";
 
 export const WorkflowJobSchema = z.object({
-    input: z.string(),      //done               
-    context: z.array(z.object({              
-        provider: z.string(),
-        fields: z.enum(["id", "content", "link", "time"]).array(),
+    input: z.string(),
+    context: z.array(z.object({
+        provider: z.nativeEnum(Provider),
+        fields: z.array(z.nativeEnum(Fields)),
         id: z.string().optional(),
         instructions: z.string().optional(),
-    })), //done 
-    instances: z.number().int(),     //todo       
-    memory: z.boolean(),     //todo                 
-    proMode: z.boolean(),                             
+    })),
+    instances: z.number().int().positive(),
+    memory: z.boolean(),
+    proMode: z.boolean(),
+    email: z.string().email(),
+    apiKey: z.string(),
 });
