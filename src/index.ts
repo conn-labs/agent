@@ -206,7 +206,7 @@ config()
 import { executeAgent } from "./llm/browser/clients";
 
  executeAgent(
-  `search gominima golang on google, click on the github link, go to issues labled as issues on the page, and complete ur workflow by telling me if there's any issue`,
+  `go to flipkart and search macbook air and tell me prices`,
   "",
   "one",
 );
