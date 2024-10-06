@@ -13,6 +13,8 @@ export interface Item {
   area: number;
   rects: Rect[];
   text: string;
+  identifier: string;
+  isText: boolean;
   id?: number;
 }
 

@@ -49,7 +49,7 @@ const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
       elements = await highlightAndLabelElements(page);
       await page.screenshot({
         path: `${sessionId}-${screenshotHash}.jpg`,
-        fullPage: true,
+        fullPage: false,
       });
       screenshotTaken = true;
       screenshot = await imgToBase64(`${sessionId}-${screenshotHash}.jpg`);
@@ -114,7 +114,7 @@ const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
 
         await page.screenshot({
           path: `${sessionId}-${screenshotHash}.jpg`,
-          fullPage: true,
+          fullPage: false,
         });
         screenshotTaken = true;
         screenshot = await imgToBase64(`${sessionId}-${screenshotHash}.jpg`);
