@@ -46,7 +46,7 @@ export async function executeAgent(
       });
 
       await Promise.race([waitForEvent(page, "load"), sleep(5000)]);
-
+     
       elements = await highlightAndLabelElements(page);
       await page.screenshot({
         path: `${sessionId}-${screenshotHash}.jpg`,

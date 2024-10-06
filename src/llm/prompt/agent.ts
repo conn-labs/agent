@@ -65,6 +65,7 @@ Memorize and Remember data from page action:
 
 actions [{
   action: "memorize";
+  text: "THE CONTENT TO MEMORIZE AND REMEMBER",
 }], {"thought": "BRIEF EXPLANATION WHY U ARE TAKING THIS STEP" }}
 
 1. Data Retention:
@@ -77,6 +78,7 @@ actions [{
    - Provide the action details in an accurate JSON format
    - Include only verified information; do not invent or assume any details
 4. Please provide your thought behind taking this action on the element for the workflow, keep it brief.
+5. Give the content you would need to memorize for later use, don't hallucinate.
 
 Success and On completion of the workflow: 
 

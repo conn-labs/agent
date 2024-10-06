@@ -206,7 +206,7 @@ config()
 import { executeAgent } from "./llm/browser/clients";
 
  executeAgent(
-  `go to flipkart and search macbook air and tell me prices`,
+  `go to url of airbnb for varanasi hotels, get me 10 hotels all different until u reach 100 hotels in total.`,
   "",
   "one",
 );
