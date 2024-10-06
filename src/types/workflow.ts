@@ -23,16 +23,6 @@ interface Context {
     instructions?: string
 }
 
-export enum Event {
-    onGmail = "on-gmail",
-    onGmailReceived = "on-gmail-received",
-    onGoogleCalendarEvent = "on-google-calendar-event",
-    onGoogleCalendarCreate = "on-google-calendar-create",
-    onGoogleDocsCreate = "on-google-docs-create",
-    onGoogleSheetsCreate = "on-google-sheets-create",
-    onGoogleMeetStart = "on-google-meet-start"
-}
-
 
 export interface AgentWorkflow {
     input: string;
@@ -40,8 +30,6 @@ export interface AgentWorkflow {
     instances: number;
     memory: boolean;
     proMode: boolean;
-    cron?: string;
-    event?: Event
 }
 
 export interface workflowContext {
@@ -65,15 +53,5 @@ export const WorkflowJobSchema = z.object({
     })), //done 
     instances: z.number().int(),     //todo       
     memory: z.boolean(),     //todo                 
-    proMode: z.boolean(),                   
-    event: z.enum([                        
-        "on-gmail", 
-        "on-gmail-received", 
-        "on-google-calendar-event", 
-        "on-google-calendar-create", 
-        "on-google-docs-create", 
-        "on-google-sheets-create", 
-        "on-google-meet-start"
-    ]), //todo
-    cron: z.string().optional()            
+    proMode: z.boolean(),                             
 });
