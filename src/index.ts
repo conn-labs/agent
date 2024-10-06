@@ -17,7 +17,7 @@ config()
 //   text: string;
 //   id?: number;
 // }
-
+    
 // interface LabelData {
 //   x: number;
 //   y: number;
