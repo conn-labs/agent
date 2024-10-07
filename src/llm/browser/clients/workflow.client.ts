@@ -14,7 +14,7 @@ import { waitForEvent } from "../event";
 const memory = new MemoryClient(process.env.MEMO || "");
 
 
-export async function workflowAgent(input: string, context: string, memory: boolean = true, instances: number, sessionId: string ) {
+export async function workflowAgent(input: string, context: string, mem: boolean = true, instances: number, sessionId: string ) {
 const browser = await BrowserInstance()
 
 const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
@@ -35,10 +35,17 @@ const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
   let screenshotHash: number = 1;
   const page = await browser.newPage();
 
+  // Initialize memory with the current session ID
+  memory.add(messages, { user_id: "agent", session_id: sessionId });
 
   while (true) {
     if (url) {
       console.log("URL", url);
+      messages.push({
+        role: "user",
+        content: `You're on this URL: ${url}`,
+      });
+
       await page.goto(url, {
         waitUntil: "domcontentloaded",
         timeout: 5000,
@@ -48,11 +55,11 @@ const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
 
       elements = await highlightAndLabelElements(page);
       await page.screenshot({
-        path: `${sessionId}-${screenshotHash}.jpg`,
+        path: `screenshot/${sessionId}-${screenshotHash}.jpg`,
         fullPage: false,
       });
       screenshotTaken = true;
-      screenshot = await imgToBase64(`${sessionId}-${screenshotHash}.jpg`);
+      screenshot = await imgToBase64(`screenshot/${sessionId}-${screenshotHash}.jpg`);
       url = null;
       screenshotHash++;
     }
@@ -106,18 +113,25 @@ const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
         elements,
       );
 
+      // Add a new action to press enter
+      await executeAgentAction(page, [{ action: "press_enter" }], elements);
+
       await sleep(4000);
       const newUrl = await new URL(page.url());
 
       if (orignalUrl.toString() !== newUrl.toString()) {
+        messages.push({
+          role: "user",
+          content: `You're on this URL: ${url}`,
+        });
         elements = await highlightAndLabelElements(page);
 
         await page.screenshot({
-          path: `${sessionId}-${screenshotHash}.jpg`,
+          path: `screenshot/${sessionId}-${screenshotHash}.jpg`,
           fullPage: false,
         });
         screenshotTaken = true;
-        screenshot = await imgToBase64(`${sessionId}-${screenshotHash}.jpg`);
+        screenshot = await imgToBase64(`screenshot/${sessionId}-${screenshotHash}.jpg`);
         url = null;
         screenshotHash++;
         console.log("urls not same");
@@ -125,6 +139,9 @@ const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
 
       console.log(newUrl.toString());
       console.log("Mem", mem);
+
+      // Update memory with the current actions
+      memory.add(messages, { user_id: "agent", session_id: sessionId, actions: data.actions, url: newUrl.toString() });
     }
   }
 
