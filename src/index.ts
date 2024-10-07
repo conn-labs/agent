@@ -204,12 +204,32 @@ config()
 // })();
 
 import { executeAgent } from "./llm/browser/clients";
+import { llmRequest } from "./llm/browser/llm";
+import OpenAI from "openai";
+import { fromatterPrompt } from "./llm/prompt/formatter";
 
- executeAgent(
-  `go to url of airbnb for varanasi hotels, get me 10 hotels all different until u reach 100 hotels in total.`,
-  "",
-  "one",
-);
+
+const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
+  {
+    role: "system",
+    content: fromatterPrompt,
+  },
+  {
+    role: "user",
+    content: "Find me a hello kitty doll",
+  },
+];
+
+const res = (await llmRequest(messages))
+
+const prompt = res 
+
+
+//  executeAgent(
+//   `go to url of airbnb for varanasi hotels, get me 10 hotels all different until u reach 100 hotels in total.`,
+//   "",
+//   "one",
+// );
 
 // when trying to access gravitational waves ka wikipedia link, it first typed in gravitonal waves wikipedia in the search bar and then clicked on the wikipedia link that appeared in the search results. After that, it memorized the data from the page and then returned a concise summary of the page.
 // in cases such as conversing on chatgpt, it repeats the same question in the conversation as it doesn't beieve the page has changed(general problem in non url non ui changing pages)

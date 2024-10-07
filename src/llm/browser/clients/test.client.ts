@@ -55,19 +55,26 @@ export async function executeAgent(
 
       await Promise.race([waitForEvent(page, "load"), sleep(5000)]);
      
-      elements = await highlightAndLabelElements(page);
+      // Take screenshot before highlighting
       await page.screenshot({
-        path: `${sessionId}-${screenshotHash}.jpg`,
+        path: `${sessionId}-${screenshotHash}-before.jpg`,
         fullPage: true,
       });
+      const beforeScreenshot = await imgToBase64(`${sessionId}-${screenshotHash}-before.jpg`);
+
+      elements = await highlightAndLabelElements(page);
+      // Take screenshot after highlighting
+      await page.screenshot({
+        path: `${sessionId}-${screenshotHash}-after.jpg`,
+        fullPage: true,
+      });
+      screenshot = await imgToBase64(`${sessionId}-${screenshotHash}-after.jpg`);
       screenshotTaken = true;
-      screenshot = await imgToBase64(`${sessionId}-${screenshotHash}.jpg`);
       url = null;
       screenshotHash++;
-    }
 
-    if (screenshotTaken) {
-      messages.push({
+      // Upload both screenshots to messages stack
+messages.push({
         role: "user",
         content: [
           {
@@ -79,11 +86,12 @@ export async function executeAgent(
           },
           {
             type: "text",
-            text: "Here's the screenshot now continue the workflow accurately and complete further steps",
+            text: "Please review the screenshot and proceed with the workflow as instructed. Ensure all steps are completed accurately.",
           },
-        ],
-      });
-
+      ],
+});
+    }
+    if (screenshotTaken) {
       screenshot = "";
       screenshotTaken = false;
     }

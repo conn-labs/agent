@@ -35,8 +35,6 @@ const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
   let screenshotHash: number = 1;
   const page = await browser.newPage();
 
-  // Initialize memory with the current session ID
-  memory.add(messages, { user_id: "agent", session_id: sessionId });
 
   while (true) {
     if (url) {
@@ -46,6 +44,8 @@ const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
         content: `You're on this URL: ${url}`,
       });
 
+
+     await memory.add(`You went to URL:${URL.toString()}`)
       await page.goto(url, {
         waitUntil: "domcontentloaded",
         timeout: 5000,
@@ -113,9 +113,6 @@ const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
         elements,
       );
 
-      // Add a new action to press enter
-      await executeAgentAction(page, [{ action: "press_enter" }], elements);
-
       await sleep(4000);
       const newUrl = await new URL(page.url());
 
@@ -139,9 +136,6 @@ const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
 
       console.log(newUrl.toString());
       console.log("Mem", mem);
-
-      // Update memory with the current actions
-      memory.add(messages, { user_id: "agent", session_id: sessionId, actions: data.actions, url: newUrl.toString() });
     }
   }
 
