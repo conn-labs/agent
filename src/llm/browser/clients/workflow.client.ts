@@ -1,4 +1,3 @@
-import MemoryClient from "mem0ai"
 import { BrowserInstance } from "../browser";
 import OpenAI from "openai";
 import { workflowPrompt } from "../../prompt/workflow";
@@ -10,134 +9,170 @@ import { executeAgentAction } from "../actions";
 import { sleep } from "bun";
 import { llmRequest } from "../llm";
 import { waitForEvent } from "../event";
+import { Page } from "puppeteer";
 
-const memory = new MemoryClient(process.env.MEMO || "");
+interface WorkflowContext {
+  messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[];
+  elements: Elements[];
+  screenshot: string;
+  screenshotTaken: boolean;
+  url: string | null;
+  screenshotHash: number;
+  memoryMap: Map<string, string>;
+}
 
-
-export async function workflowAgent(input: string, context: string, mem: boolean = true, instances: number, sessionId: string, userId: string ) {
-const browser = await BrowserInstance()
-
-const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
-    {
-      role: "system",
-      content: workflowPrompt(context, instances),
-    },
-    {
-      role: "user",
-      content: input,
-    },
-  ];
-   
-  let elements: Elements[] = [];
-  let screenshot: string = "";
-  let screenshotTaken: boolean = false;
-  let url: string | null = null;
-  let screenshotHash: number = 1;
+export async function workflowAgent(
+  input: string,
+  context: string,
+  instances: number,
+  sessionId: string,
+  userId: string
+) {
+  const browser = await BrowserInstance();
   const page = await browser.newPage();
 
+  const workflowContext: WorkflowContext = {
+    messages: [
+      { role: "system", content: workflowPrompt(context, instances) },
+      { role: "user", content: input },
+    ],
+    elements: [],
+    screenshot: "",
+    screenshotTaken: false,
+    url: null,
+    screenshotHash: 1,
+    memoryMap: new Map(),
+  };
 
   while (true) {
-    if (url) {
-      console.log("URL", url);
-      messages.push({
-        role: "user",
-        content: `You're on this URL: ${url}`,
-      });
+    await handleNavigation(page, workflowContext, sessionId);
+    await handleScreenshot(workflowContext, sessionId);
 
-
-     await memory.add(`You went to URL:${URL.toString()}`)
-      await page.goto(url, {
-        waitUntil: "domcontentloaded",
-        timeout: 5000,
-      });
-
-      await Promise.race([waitForEvent(page, "load"), sleep(5000)]);
-
-      elements = await highlightAndLabelElements(page);
-      await page.screenshot({
-        path: `screenshot/${sessionId}-${screenshotHash}.jpg`,
-        fullPage: false,
-      });
-      screenshotTaken = true;
-      screenshot = await imgToBase64(`screenshot/${sessionId}-${screenshotHash}.jpg`);
-      url = null;
-      screenshotHash++;
-    }
-
-    if (screenshotTaken) {
-      messages.push({
-        role: "user",
-        content: [
-          {
-            type: "image_url",
-            image_url: {
-              url: screenshot,
-              detail: "high",
-            },
-          },
-          {
-            type: "text",
-            text: "Here's the screenshot now continue the workflow accurately and complete further steps",
-          },
-        ],
-      });
-
-      screenshot = "";
-      screenshotTaken = false;
-    }
-
-    const response = await llmRequest(messages);
-
+    const response = await llmRequest(workflowContext.messages);
     if (!response) break;
 
-    messages.push({
+    workflowContext.messages.push({
       role: "assistant",
       content: response.toString(),
     });
 
-    const data: any = JSON.parse(response.toString());
+    const data = JSON.parse(response.toString());
 
     if (data.url) {
-      url = data.url;
+      workflowContext.url = data.url;
     }
 
     if (data.success) {
       console.log(data.success);
       break;
     }
+
     if (data.actions) {
-      const orignalUrl = await new URL(page.url());
-      const mem: String | null | undefined = await executeAgentAction(
-        page,
-        data.actions as AgentAction[],
-        elements,
-      );
-
-      await sleep(4000);
-      const newUrl = await new URL(page.url());
-
-      if (orignalUrl.toString() !== newUrl.toString()) {
-        messages.push({
-          role: "user",
-          content: `You're on this URL: ${url}`,
-        });
-        elements = await highlightAndLabelElements(page);
-
-        await page.screenshot({
-          path: `screenshot/${sessionId}-${screenshotHash}.jpg`,
-          fullPage: false,
-        });
-        screenshotTaken = true;
-        screenshot = await imgToBase64(`screenshot/${sessionId}-${screenshotHash}.jpg`);
-        url = null;
-        screenshotHash++;
-        console.log("urls not same");
-      }
-
-      console.log(newUrl.toString());
-      console.log("Mem", mem);
+      await handleActions(page, data.actions, workflowContext, sessionId);
     }
   }
+}
 
-  
+async function handleNavigation(
+  page: Page,
+  context: WorkflowContext,
+  sessionId: string
+) {
+  if (context.url) {
+    console.log("URL", context.url);
+    context.messages.push({
+      role: "user",
+      content: `You're on this URL: ${context.url}`,
+    });
+    context.memoryMap.set("lastUrl", context.url);
+
+    await page.goto(context.url, {
+      waitUntil: "domcontentloaded",
+      timeout: 5000,
+    });
+    await Promise.race([waitForEvent(page, "load"), sleep(5000)]);
+
+    context.elements = await highlightAndLabelElements(page);
+    await takeScreenshot(page, sessionId, context.screenshotHash);
+    context.screenshot = await imgToBase64(`screenshot/${sessionId}-${context.screenshotHash}.jpg`);
+    context.screenshotTaken = true;
+    context.url = null;
+    context.screenshotHash++;
+  }
+}
+
+async function handleScreenshot(
+  context: WorkflowContext,
+  sessionId: string
+) {
+  if (context.screenshotTaken) {
+    const memoryContent = Array.from(context.memoryMap.entries())
+      .map(([key, value]) => `${key}: ${value}`)
+      .join('\n');
+
+    context.messages.push({
+      role: "user",
+      content: [
+        {
+          type: "image_url",
+          image_url: {
+            url: context.screenshot,
+            detail: "high",
+          },
+        },
+        {
+          type: "text",
+          text: `Here's the screenshot. Continue the workflow accurately and complete further steps. Current memory:\n${memoryContent}`,
+        },
+      ],
+    });
+    context.screenshot = "";
+    context.screenshotTaken = false;
+  }
+}
+
+async function handleActions(
+  page: Page,
+  actions: AgentAction[],
+  context: WorkflowContext,
+  sessionId: string
+) {
+  const originalUrl = new URL(page.url());
+  const result = await executeAgentAction(page, actions, context.elements);
+  if(result){
+    context.memoryMap.set(`memory_${context.memoryMap.size}`, result);
+  }
+
+  await sleep(4000);
+  const newUrl = new URL(page.url());
+
+  if (originalUrl.toString() !== newUrl.toString()) {
+    context.messages.push({
+      role: "user",
+      content: `You're on this URL: ${newUrl.toString()}`,
+    });
+    context.memoryMap.set("lastUrl", newUrl.toString());
+
+    context.elements = await highlightAndLabelElements(page);
+    await takeScreenshot(page, sessionId, context.screenshotHash);
+    context.screenshotTaken = true;
+    context.screenshot = await imgToBase64(`screenshot/${sessionId}-${context.screenshotHash}.jpg`);
+    context.url = null;
+    context.screenshotHash++;
+    console.log("URLs not same");
+  }
+
+  console.log(newUrl.toString());
+  console.log("Memory Map:", context.memoryMap);
+}
+
+async function takeScreenshot(
+  page: Page,
+  sessionId: string,
+  screenshotHash: number
+) {
+  await page.screenshot({
+    path: `screenshot/${sessionId}-${screenshotHash}.jpg`,
+    fullPage: false,
+  });
 }
