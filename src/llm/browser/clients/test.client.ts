@@ -1,5 +1,5 @@
 import { BrowserInstance } from "../browser";
-import { Page } from "puppeteer";
+import { Page, ScreenRecorder } from "puppeteer";
 import { highlightAndLabelElements } from "../highlight";
 import { executeAgentAction } from "../actions";
 import OpenAI from "openai";
@@ -7,8 +7,10 @@ import { basePrompt } from "../../prompt/agent";
 import { llmRequest } from "../llm";
 import { waitForEvent } from "../event";
 import { Elements } from "../../../types/browser";
-import { imgToBase64 } from "../../../utils/img";
+import { PuppeteerScreenRecorder } from "../../../../pup-ss/src"
 import { AgentAction } from "../../../types/action";
+import { imgToBase64 } from "../../../utils/img";
+import { PassThrough } from "stream";
 
  
 export async function executeAgent(
@@ -37,6 +39,12 @@ export async function executeAgent(
   let url: string | null = null;
   let screenshotHash: number = 1;
   const page = await browser.newPage();
+  const recorder = new PuppeteerScreenRecorder(page);
+  const stream = new PassThrough();
+  await recorder.startStream(stream)
+  stream.on('data',  (d) => {
+   console.log(d)
+  });
   while (true) {
     if (url) {
       console.log("URL", url);
@@ -97,6 +105,7 @@ export async function executeAgent(
 
     if (data.success) {
       console.log(data.success);
+      recorder.stop()
       break;
     }
     if (data.actions) {

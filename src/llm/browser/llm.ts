@@ -2,7 +2,7 @@ import OpenAI from "openai";
 
 export async function llmRequest(
   messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[],
-  model: string = "o1-mini",
+  model: string = "gpt-4o",
 ): Promise<String | null> {
   const client = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,

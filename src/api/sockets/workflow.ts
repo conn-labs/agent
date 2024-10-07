@@ -18,8 +18,9 @@ export default async function workflowHandler(
       ws.send(JSON.stringify({ error: "Invalid API key" }));
       return;
     }
-  
+   
     
+
     // Process the workflow job here
     // You might want to call a function to handle the workflow execution
     // For example: await processWorkflowJob(parsedData, randomUUID(), ws);

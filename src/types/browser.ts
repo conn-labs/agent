@@ -13,7 +13,7 @@ export interface Item {
   area: number;
   rects: Rect[];
   text: string;
-
+  id?: number;
 }
 
 export interface Elements {
