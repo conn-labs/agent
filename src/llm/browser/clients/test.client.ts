@@ -41,10 +41,10 @@ export async function executeAgent(
   const page = await browser.newPage();
   const recorder = new PuppeteerScreenRecorder(page);
   const stream = new PassThrough();
-  await recorder.startStream(stream)
-  stream.on('data',  (d) => {
-   console.log(d)
-  });
+  // await recorder.startStream(stream)
+  // stream.on('data',  (d) => {
+  //  console.log(d)
+  // });
   while (true) {
     if (url) {
       console.log("URL", url);

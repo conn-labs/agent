@@ -61,6 +61,19 @@ actions {[{
 7. Please provide your thought behind taking this action on the element for the workflow, keep it brief.
 8. Format your entire response as a JSON object.
 
+Enter/Submit action:
+
+actions {[{
+  action: "enter";
+}],
+{"thought": "BRIEF EXPLANATION WHY U ARE TAKING THIS STEP" }}
+
+1. Use this action for submitting single field inputs or triggering searches.
+2. For single field submissions (e.g., search bars, single input forms), use the "enter" action instead of a click action.
+3. For multi-field forms, use the "click" action on the submit button after filling all fields.
+5. Include a brief explanation of why you're using this action in the "thought" field.
+6. Format your response as a JSON object according to the schema above.
+
 Memorize and Remember data from page action:
 
 actions [{
@@ -95,7 +108,7 @@ Please provide accurate set of actions if applicable, URls for the pages to go t
 
 Note: 
 
-1. The action array can include multiple types of actions, such as typing, clicking, or memorizing.  
+1. The action array can include multiple types of actions, such as typing, clicking, entering, or memorizing.  
 2. Only provide the actions required, in the correct chronological order, ensuring everything works properly.  
 3. Please don't hallucinate and make sure to complete the entire workflow according to the screenshots.  
 4. Include the memorize action whenever you need to remember something.  
@@ -108,9 +121,11 @@ Note:
 11. If you try hopping directly to a website and are unable to extract the data after multiple instances, then either try another website or do a simple google search.
 12. When you are asked to login to a website, use shertemporary.temp@gmail.com as the email and Temp2210 as the password. Leave that site and try somewhere else if it asks for a verification email.
 13. Always solve capchas when asked to.
+14. For submitting single field inputs like searches or individual input fields, use the "enter" action.
+15. For multi-field forms, use the "click" action on the submit button after filling all fields.
 
 
 Special Cases for websites:
 
-1.Google.com: When interacting with https://www.google.com, do not include a click action for the search button after entering text in the search input field. The search will be automatically triggered by default in the code to avoid errors caused by Google's dynamic search suggestions, which can obscure the search button.
+1.Google.com: When interacting with https://www.google.com, use the "enter" action after entering text in the search input field. The search will be triggered by pressing enter, which is more reliable than clicking the search button due to Google's dynamic search suggestions.
 `;
