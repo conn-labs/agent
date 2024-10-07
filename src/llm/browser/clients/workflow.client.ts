@@ -14,7 +14,7 @@ import { waitForEvent } from "../event";
 const memory = new MemoryClient(process.env.MEMO || "");
 
 
-export async function workflowAgent(input: string, context: string, mem: boolean = true, instances: number, sessionId: string ) {
+export async function workflowAgent(input: string, context: string, mem: boolean = true, instances: number, sessionId: string, userId: string ) {
 const browser = await BrowserInstance()
 
 const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [

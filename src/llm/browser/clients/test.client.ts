@@ -54,13 +54,6 @@ export async function executeAgent(
       });
 
       await Promise.race([waitForEvent(page, "load"), sleep(5000)]);
-     
-      // Take screenshot before highlighting
-      await page.screenshot({
-        path: `${sessionId}-${screenshotHash}-before.jpg`,
-        fullPage: true,
-      });
-      const beforeScreenshot = await imgToBase64(`${sessionId}-${screenshotHash}-before.jpg`);
 
       elements = await highlightAndLabelElements(page);
       // Take screenshot after highlighting
@@ -73,8 +66,10 @@ export async function executeAgent(
       url = null;
       screenshotHash++;
 
-      // Upload both screenshots to messages stack
-messages.push({
+
+    }
+    if (screenshotTaken) {
+      messages.push({
         role: "user",
         content: [
           {
@@ -90,8 +85,6 @@ messages.push({
           },
       ],
 });
-    }
-    if (screenshotTaken) {
       screenshot = "";
       screenshotTaken = false;
     }
