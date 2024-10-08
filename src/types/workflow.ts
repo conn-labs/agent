@@ -17,7 +17,7 @@ export enum Provider {
 }
 
 interface Context {
-    provider: string
+    provider: Provider
     fields: Fields[],
     id?: string
     instructions?: string

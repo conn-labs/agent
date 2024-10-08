@@ -14,20 +14,14 @@ const CtxMap: Record<Provider, ContextFunction> = {
 
 export async function getContext(
     provider: Provider,
-    fields: Fields[],
     accessToken: string,
     refreshToken: string,
-    id?: string,
-): Promise<string> {
+): Promise<workflowContext[]> {
     const func = CtxMap[provider];
     if (!func) {
         throw new Error(`Unsupported provider: ${provider}`);
     }
     const result = await func(accessToken, refreshToken);
 
-    const context = result.map(item => {
-        return `Id: ${item[Fields.ID]}, Content: ${item[Fields.CONTENT]}, Link: ${item[Fields.LINK]}, Created At: ${item[Fields.CREATEDAT]}, Updated At: ${item[Fields.UPDATEDAT]}, Authors: ${item[Fields.AUTHORS] || 'N/A'}`;
-    }).join('\n\n');
-    return context
-
+    return result
 }

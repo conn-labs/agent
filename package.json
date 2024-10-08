@@ -38,6 +38,7 @@
     "graphql": "^16.9.0",
     "hono": "^4.5.11",
     "jsdom": "^25.0.0",
+    "json-to-plain-text": "^1.1.4",
     "jsonwebtoken": "^9.0.2",
     "mem0ai": "^1.0.11",
     "morgan": "^1.10.0",
