@@ -12,6 +12,12 @@ export async function eventClick(
   await page.mouse.up();
 }
 
+export async function eventPressEnter(
+  page: Page,
+) {
+  await page.keyboard.press("Enter");
+}
+
 export async function eventType(page: Page, text: string): Promise<void> {
   for (const char of text) {
     await page.keyboard.type(char, { delay: 100 });
@@ -26,6 +32,8 @@ export async function moveToElement(
 ): Promise<void> {
   await page.mouse.move(x, y);
 }
+
+
 
 export async function scrollToElement(
   page: Page,
@@ -94,8 +102,15 @@ export async function executeAgentAction(
         await scrollToElement(page, scrollElement.x, scrollElement.y);
         return "scrolled";
       }
-      case "memorize":
+      case "memorize": {
         return action.text || null;
+      }
+
+      case "enter": {
+        await eventPressEnter(page)
+        return "enter";
+      }
+
     }
   }
   return null;

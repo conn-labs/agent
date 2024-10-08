@@ -15,7 +15,7 @@ export interface Data {
 }
 
 export interface AgentAction {
-  action: "click" | "type" | "scroll" | "memorize";
+  action: "click" | "type" | "scroll" | "memorize" | "enter";
   elementId?: number;
   text?: string;
 }
