@@ -79,7 +79,7 @@ export async function executeAgentAction(
         );
         if (element) {
           await eventClick(page, element.x, element.y);
-          return "clicked";
+          return null
         }
         break;
       }
@@ -91,7 +91,7 @@ export async function executeAgentAction(
         if (!typeElement) break;
         await eventClick(page, typeElement.x, typeElement.y);
         await eventType(page, action.text || "");
-        return "typed";
+        return null;
       }
       case "scroll": {
         const scrollElement = await findElement(
@@ -100,15 +100,15 @@ export async function executeAgentAction(
         );
         if (!scrollElement) break;
         await scrollToElement(page, scrollElement.x, scrollElement.y);
-        return "scrolled";
+        return null;
       }
       case "memorize": {
-        return action.text || null;
+        return  null;
       }
 
       case "enter": {
         await eventPressEnter(page)
-        return "enter";
+        return null;
       }
 
     }
