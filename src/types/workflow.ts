@@ -56,6 +56,5 @@ export const WorkflowJobSchema = z.object({
   instances: z.number().int().positive(),
   memory: z.boolean(),
   proMode: z.boolean(),
-  email: z.string().email(),
   apiKey: z.string(),
 });

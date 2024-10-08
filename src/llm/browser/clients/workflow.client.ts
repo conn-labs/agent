@@ -10,6 +10,7 @@ import { sleep } from "bun";
 import { llmRequest } from "../llm";
 import { waitForEvent } from "../event";
 import { Page } from "puppeteer";
+import { WebSocket } from "ws";
 
 interface WorkflowContext {
   messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[];
@@ -26,7 +27,7 @@ export async function workflowAgent(
   context: string,
   instances: number,
   sessionId: string,
-  userId: string,
+  ws?: WebSocket
 ) {
   const browser = await BrowserInstance();
   const page = await browser.newPage();

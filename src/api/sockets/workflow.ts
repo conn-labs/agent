@@ -1,10 +1,9 @@
 import { WebSocket } from "ws";
-import { randomUUID } from "node:crypto";
-import { wsPayload } from "../../types/ws";
-import { validateApiKeys } from "../../common/validateApikey";
+import { validateApiKeyAndReturnUser, validateApiKeys } from "../../common/validateApikey";
 import { WorkflowJobSchema } from "../../types/workflow";
 import { z } from "zod";
-import { findUserByEmail } from "../../common/findUser";
+import { contextParser } from "../../llm/parser/data.parser";
+import { workflowAgent } from "../../llm/browser/clients";
 
 export default async function workflowHandler(
   ws: WebSocket,
@@ -18,10 +17,33 @@ export default async function workflowHandler(
       ws.send(JSON.stringify({ error: "Invalid API key" }));
       return;
     }
+    const key = parsedData.apiKey
 
-    // Process the workflow job here
-    // You might want to call a function to handle the workflow execution
-    // For example: await processWorkflowJob(parsedData, randomUUID(), ws);
+    const user = await validateApiKeyAndReturnUser(key);
+
+    if(!user) {
+      ws.send(
+        JSON.stringify({
+          error: "Validation failed",
+          issues: "Invalid Api key",
+        }),
+      );
+      ws.close()
+      return
+    }
+
+    const context = await parsedData.context.map(async (v) => {
+      const ctx = await contextParser(v.provider, v.fields, user?.id )
+      return ctx
+    }).join("/n")
+   
+    await workflowAgent(
+      parsedData.input,
+      context,
+      parsedData.instances,
+      user.id, 
+      ws
+    )
   } catch (error) {
     if (error instanceof z.ZodError) {
       ws.send(

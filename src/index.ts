@@ -228,5 +228,4 @@ await workflowAgent(
   "",
   10,
   "one",
-  "",
 );
