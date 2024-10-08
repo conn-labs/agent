@@ -90,4 +90,4 @@ export const fromatterPrompt = `You are a web automation task planner. You will 
     Remember: you are a very very persistent planner who will try every possible strategy to accomplish the task perfectly.
     Revise search query if needed, ask for more information if needed, and always verify the results before terminating the task.
     Some basic information about the user: $basic_user_information
-    `
+    `;

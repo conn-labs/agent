@@ -31,7 +31,6 @@ export interface LinkInfo {
   link: string;
 }
 
-
 export interface AgentExecutionContext {
   messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[];
   elements: Elements[];

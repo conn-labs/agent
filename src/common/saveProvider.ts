@@ -1,21 +1,21 @@
-import { Provider } from '@prisma/client';
-import type { Authentication } from '@prisma/client'; // Type-only import   
+import { Provider } from "@prisma/client";
+import type { Authentication } from "@prisma/client"; // Type-only import
 
-import { prisma } from "../lib"
+import { prisma } from "../lib";
 
 async function saveAuthentication(
   provider: Provider,
   accessToken: string,
   userId: string,
-  refreshToken?: string | null
+  refreshToken?: string | null,
 ): Promise<Authentication> {
   try {
     const authentication = await prisma.authentication.upsert({
       where: {
         userId_provider: {
           userId,
-          provider
-        }
+          provider,
+        },
       },
       update: {
         accessToken,
@@ -25,15 +25,15 @@ async function saveAuthentication(
         provider,
         accessToken,
         refreshToken,
-        user: { connect: { id: userId } }
-      }
-    })
+        user: { connect: { id: userId } },
+      },
+    });
 
-    return authentication
+    return authentication;
   } catch (error) {
-    console.error('Error saving authentication:', error)
-    throw error
+    console.error("Error saving authentication:", error);
+    throw error;
   }
 }
 
-export { saveAuthentication }
+export { saveAuthentication };

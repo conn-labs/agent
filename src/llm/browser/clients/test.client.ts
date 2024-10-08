@@ -16,7 +16,7 @@ import { AgentExecutionContext } from "../../../types/browser";
 export async function executeAgent(
   input: string,
   context: string,
-  sessionId: string
+  sessionId: string,
 ) {
   const browser = await BrowserInstance();
   const page = await browser.newPage();
@@ -67,7 +67,7 @@ export async function executeAgent(
 async function handleNavigation(
   page: Page,
   context: AgentExecutionContext,
-  sessionId: string
+  sessionId: string,
 ) {
   if (context.url) {
     console.log("URL", context.url);
@@ -79,7 +79,9 @@ async function handleNavigation(
 
     context.elements = await highlightAndLabelElements(page);
     await takeScreenshot(page, sessionId, context.screenshotHash, "-after");
-    context.screenshot = await imgToBase64(`${sessionId}-${context.screenshotHash}-after.jpg`);
+    context.screenshot = await imgToBase64(
+      `${sessionId}-${context.screenshotHash}-after.jpg`,
+    );
     context.screenshotTaken = true;
     context.url = null;
     context.screenshotHash++;
@@ -88,7 +90,7 @@ async function handleNavigation(
 
 async function handleScreenshot(
   context: AgentExecutionContext,
-  sessionId: string
+  sessionId: string,
 ) {
   if (context.screenshotTaken) {
     context.messages.push({
@@ -116,7 +118,7 @@ async function handleActions(
   page: Page,
   actions: AgentAction[],
   context: AgentExecutionContext,
-  sessionId: string
+  sessionId: string,
 ) {
   const originalUrl = new URL(page.url());
   await executeAgentAction(page, actions, context.elements);
@@ -127,7 +129,9 @@ async function handleActions(
     context.elements = await highlightAndLabelElements(page);
     await takeScreenshot(page, sessionId, context.screenshotHash);
     context.screenshotTaken = true;
-    context.screenshot = await imgToBase64(`${sessionId}-${context.screenshotHash}.jpg`);
+    context.screenshot = await imgToBase64(
+      `${sessionId}-${context.screenshotHash}.jpg`,
+    );
     context.url = null;
     context.screenshotHash++;
     console.log("URLs not same");
@@ -140,7 +144,7 @@ async function takeScreenshot(
   page: Page,
   sessionId: string,
   screenshotHash: number,
-  suffix: string = ""
+  suffix: string = "",
 ) {
   await page.screenshot({
     path: `${sessionId}-${screenshotHash}${suffix}.jpg`,

@@ -1,20 +1,21 @@
 import { google } from "googleapis/build/src";
 import { drive_v3 } from "googleapis/build/src/apis/drive/v3";
 import { Fields } from "../../../types/workflow";
-const CLIENT_ID = process.env.GOOGLE_ID || 'YOUR_GOOGLE_CLIENT_ID';
-const CLIENT_SECRET = process.env.GOOGLE_SECRET || 'YOUR_GOOGLE_CLIENT_SECRET';
-const REDIRECT_URI = 'http://localhost:8080/auth/google/callback';
+const CLIENT_ID = process.env.GOOGLE_ID || "YOUR_GOOGLE_CLIENT_ID";
+const CLIENT_SECRET = process.env.GOOGLE_SECRET || "YOUR_GOOGLE_CLIENT_SECRET";
+const REDIRECT_URI = "http://localhost:8080/auth/google/callback";
 
-
-
-import {workflowContext} from "../../../types/workflow"
+import { workflowContext } from "../../../types/workflow";
 
 // Helper for Google Drive Links
 const createDriveLink = (fileId: string): string =>
   `https://drive.google.com/file/d/${fileId}/view`;
 
 // 1. Get Google Doc Content
-async function getGoogleDocContext(accessToken: string, refreshToken: string): Promise<workflowContext[]> {
+async function getGoogleDocContext(
+  accessToken: string,
+  refreshToken: string,
+): Promise<workflowContext[]> {
   const client = await getGoogleAuthClient(accessToken, refreshToken);
   const drive = google.drive({ version: "v3", auth: client });
 
@@ -25,16 +26,19 @@ async function getGoogleDocContext(accessToken: string, refreshToken: string): P
   const files = response.data.files;
   if (!files || files.length === 0) return [];
 
-  const docsArray: Promise<workflowContext>[] = files.reverse().slice(0, 10).map(async (file: drive_v3.Schema$File) => {
-    const content = await getGoogleDocContent(file.id || "", drive);
-    return {
-      [Fields.ID]: file.id || "",
-      [Fields.CONTENT]: content,
-      [Fields.LINK]: createDriveLink(file.id || ""),
-      [Fields.CREATEDAT]: file.createdTime || "",
-      [Fields.UPDATEDAT]: file.modifiedTime || "",
-    };
-  });
+  const docsArray: Promise<workflowContext>[] = files
+    .reverse()
+    .slice(0, 10)
+    .map(async (file: drive_v3.Schema$File) => {
+      const content = await getGoogleDocContent(file.id || "", drive);
+      return {
+        [Fields.ID]: file.id || "",
+        [Fields.CONTENT]: content,
+        [Fields.LINK]: createDriveLink(file.id || ""),
+        [Fields.CREATEDAT]: file.createdTime || "",
+        [Fields.UPDATEDAT]: file.modifiedTime || "",
+      };
+    });
 
   return Promise.all(docsArray);
 }
@@ -50,13 +54,19 @@ async function getGoogleDocContent(
     });
     return (response.data as string).replace(/(\r\n|\n|\r)/gm, " ");
   } catch (error) {
-    console.error(`Error retrieving content for Google Doc (${docId}):`, (error as Error).message);
+    console.error(
+      `Error retrieving content for Google Doc (${docId}):`,
+      (error as Error).message,
+    );
     return "";
   }
 }
 
 // 2. Get Google Calendar Events
-async function getGoogleCalendarEvents(accessToken: string, refreshToken: string): Promise<workflowContext[]> {
+async function getGoogleCalendarEvents(
+  accessToken: string,
+  refreshToken: string,
+): Promise<workflowContext[]> {
   const client = await getGoogleAuthClient(accessToken, refreshToken);
   const calendar = google.calendar({ version: "v3", auth: client });
 
@@ -81,7 +91,10 @@ async function getGoogleCalendarEvents(accessToken: string, refreshToken: string
 }
 
 // 3. Get All Google Sheets
-async function getAllGoogleSheets(accessToken: string, refreshToken: string): Promise<workflowContext[]> {
+async function getAllGoogleSheets(
+  accessToken: string,
+  refreshToken: string,
+): Promise<workflowContext[]> {
   const client = await getGoogleAuthClient(accessToken, refreshToken);
   const drive = google.drive({ version: "v3", auth: client });
 
@@ -117,7 +130,7 @@ async function getGoogleSheetContent(
   });
   const csvData = response.data as string;
   const rows = csvData.split("\n").map((row) => row.split(","));
-  
+
   // Convert CSV to an array of objects (Assume first row is header)
   const headers = rows[0];
   return rows.slice(1).map((row) =>
@@ -129,7 +142,10 @@ async function getGoogleSheetContent(
 }
 
 // 4. Get All Drive Files (General)
-async function getAllDriveFiles(accessToken: string, refreshToken: string): Promise<workflowContext[]> {
+async function getAllDriveFiles(
+  accessToken: string,
+  refreshToken: string,
+): Promise<workflowContext[]> {
   const client = await getGoogleAuthClient(accessToken, refreshToken);
   const drive = google.drive({ version: "v3", auth: client });
 
@@ -150,7 +166,10 @@ async function getAllDriveFiles(accessToken: string, refreshToken: string): Prom
 }
 
 // 5. Get Latest Emails
-async function getLatestEmails(accessToken: string, refreshToken: string): Promise<workflowContext[]> {
+async function getLatestEmails(
+  accessToken: string,
+  refreshToken: string,
+): Promise<workflowContext[]> {
   const client = await getGoogleAuthClient(accessToken, refreshToken);
   const gmail = google.gmail({ version: "v1", auth: client });
 
@@ -179,7 +198,7 @@ async function getLatestEmails(accessToken: string, refreshToken: string): Promi
 
 async function getEmailDetails(
   messageId: string,
-  client: any
+  client: any,
 ): Promise<{
   subject: string;
   content: string;
@@ -196,9 +215,13 @@ async function getEmailDetails(
   const message = messageResponse.data;
   const headers = message.payload?.headers || [];
 
-  const subject = headers.find((header: any) => header.name === "Subject")?.value || "";
-  const timestamp = new Date(parseInt(message.internalDate || "0", 10)).toLocaleString();
-  const receiver = headers.find((header: any) => header.name === "To")?.value || "";
+  const subject =
+    headers.find((header: any) => header.name === "Subject")?.value || "";
+  const timestamp = new Date(
+    parseInt(message.internalDate || "0", 10),
+  ).toLocaleString();
+  const receiver =
+    headers.find((header: any) => header.name === "To")?.value || "";
   const content = message.snippet || "";
 
   return { subject, content, timestamp, receiver };
@@ -206,11 +229,7 @@ async function getEmailDetails(
 
 // Helper: Google Auth Client Initialization
 async function getGoogleAuthClient(accessToken: string, refreshToken: string) {
-  const client = new google.auth.OAuth2(
-    CLIENT_ID,
-    CLIENT_SECRET,
-    REDIRECT_URI,
-  );
+  const client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
 
   client.setCredentials({
     access_token: accessToken,

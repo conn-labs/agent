@@ -12,9 +12,7 @@ export async function eventClick(
   await page.mouse.up();
 }
 
-export async function eventPressEnter(
-  page: Page,
-) {
+export async function eventPressEnter(page: Page) {
   await page.keyboard.press("Enter");
 }
 
@@ -31,8 +29,6 @@ export async function moveToElement(
 ): Promise<void> {
   await page.mouse.move(x, y);
 }
-
-
 
 export async function scrollToElement(
   page: Page,
@@ -78,7 +74,7 @@ export async function executeAgentAction(
         );
         if (element) {
           await eventClick(page, element.x, element.y);
-          return null
+          return null;
         }
         break;
       }
@@ -106,10 +102,9 @@ export async function executeAgentAction(
       }
 
       case "enter": {
-        await eventPressEnter(page)
+        await eventPressEnter(page);
         return null;
       }
-
     }
   }
   return null;

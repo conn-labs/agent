@@ -1,5 +1,5 @@
-    export const workflowPrompt = (ctx: string, instances: number): string => {
-        return `
+export const workflowPrompt = (ctx: string, instances: number): string => {
+  return `
 # Advanced Browser Automation AI Assistant
 
 You are an expert Browser AI agent with vision capabilities. Your primary task is to analyze marked screenshots of webpages and recommend suitable actions based on user requirements.
@@ -275,5 +275,5 @@ Context (ctx): "Preferred airline: Delta, Budget: $1000, Dates: Depart June 15, 
 
 
 Remember: Always use the provided context and number of instances to guide your actions throughout the workflow. Utilize only the exact element IDs (single numbers) from the screenshots for all interactions. Complete the entire workflow before providing a final success message.
-        ` 
-}
+        `;
+};

@@ -32,7 +32,7 @@ export async function parseLinksFromHtml(url: string): Promise<LinkInfo[]> {
         };
       })
       .filter((link): link is LinkInfo => link !== null);
-    
+
     return links;
   } catch (error) {
     console.error("Error fetching or parsing the webpage:", error);

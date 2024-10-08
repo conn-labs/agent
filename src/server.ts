@@ -65,7 +65,7 @@ app.get(
 
 app.post("/api/keys", createApiKey);
 
-app.get("/auth/google", GoogleRedirect)
+app.get("/auth/google", GoogleRedirect);
 
 app.get("/auth/google/callback", GoogleCallback);
 
@@ -145,14 +145,13 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 const PORT: number = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 
 server.listen(PORT, async () => {
-  console.log(process.env)
+  console.log(process.env);
   console.log(`Server is running on http://localhost:${PORT}`);
   console.log(`WebSocket server is running on ws://localhost:${PORT}`);
 });
 
 // Graceful shutdown
 process.on("SIGINT", () => {
-
   console.log("Shutting down server...");
   server.close(() => {
     console.log("Server shut down");

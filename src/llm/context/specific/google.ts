@@ -119,7 +119,7 @@
 //   // Retrieve details for the latest email
 //   const latestMessageId = messages[0].id || "";
 //   const emailDetails = await getEmailDetails("me", latestMessageId, client);
-  
+
 //   return {
 //     [Fields.ID]: latestMessageId,
 //     [Fields.CONTENT]: emailDetails.content,

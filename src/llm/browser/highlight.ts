@@ -4,7 +4,6 @@ import { Elements, Item, Rect } from "../../types/browser";
 export async function highlightAndLabelElements(
   page: Page,
 ): Promise<Elements[]> {
-  
   return await page.evaluate(() => {
     function getElementRects(element: Element, vw: number, vh: number): Rect[] {
       return [...element.getClientRects()]
@@ -144,11 +143,10 @@ export async function highlightAndLabelElements(
         ),
       }));
     }
-    console.log("done")
+    console.log("done");
 
     return markPage();
   });
-
 }
 
 export async function highlightPage(page: Page): Promise<void> {
@@ -156,8 +154,8 @@ export async function highlightPage(page: Page): Promise<void> {
     function getElementRects(element: Element): Rect[] {
       return [...element.getClientRects()].map((bb) => {
         const rect = {
-          left: Math.max(0, bb.left + window.scrollX),  // Adjust for scroll position
-          top: Math.max(0, bb.top + window.scrollY),    // Adjust for scroll position
+          left: Math.max(0, bb.left + window.scrollX), // Adjust for scroll position
+          top: Math.max(0, bb.top + window.scrollY), // Adjust for scroll position
           right: bb.right + window.scrollX,
           bottom: bb.bottom + window.scrollY,
         };
@@ -179,7 +177,7 @@ export async function highlightPage(page: Page): Promise<void> {
 
       const newElement = document.createElement("div");
       newElement.style.outline = `2px dashed ${borderColor}`;
-      newElement.style.position = "absolute";  // Absolute positioning for full page scroll coverage
+      newElement.style.position = "absolute"; // Absolute positioning for full page scroll coverage
       newElement.style.left = `${bbox.left}px`;
       newElement.style.top = `${bbox.top}px`;
       newElement.style.width = `${bbox.width}px`;
@@ -211,7 +209,7 @@ export async function highlightPage(page: Page): Promise<void> {
             include: shouldIncludeElement(element),
             area,
             rects,
-            text: element.textContent || ''
+            text: element.textContent || "",
           };
         })
         .filter((item) => item.include && item.area >= 20); // Include only valid items

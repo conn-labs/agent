@@ -26,7 +26,7 @@ export async function workflowAgent(
   context: string,
   instances: number,
   sessionId: string,
-  userId: string
+  userId: string,
 ) {
   const browser = await BrowserInstance();
   const page = await browser.newPage();
@@ -76,7 +76,7 @@ export async function workflowAgent(
 async function handleNavigation(
   page: Page,
   context: WorkflowContext,
-  sessionId: string
+  sessionId: string,
 ) {
   if (context.url) {
     console.log("URL", context.url);
@@ -94,22 +94,21 @@ async function handleNavigation(
 
     context.elements = await highlightAndLabelElements(page);
     await takeScreenshot(page, sessionId, context.screenshotHash);
-    context.screenshot = await imgToBase64(`screenshots/${sessionId}-${context.screenshotHash}.jpg`);
+    context.screenshot = await imgToBase64(
+      `screenshots/${sessionId}-${context.screenshotHash}.jpg`,
+    );
     context.screenshotTaken = true;
     context.url = null;
     context.screenshotHash++;
   }
 }
 
-async function handleScreenshot(
-  context: WorkflowContext,
-  sessionId: string
-) {
+async function handleScreenshot(context: WorkflowContext, sessionId: string) {
   if (context.screenshotTaken) {
     const memoryContent = Array.from(context.memoryMap.entries())
       .map(([key, value]) => `${key}: ${value}`)
-      .join('\n');
-      console.log(memoryContent)
+      .join("\n");
+    console.log(memoryContent);
 
     context.messages.push({
       role: "user",
@@ -136,11 +135,11 @@ async function handleActions(
   page: Page,
   actions: AgentAction[],
   context: WorkflowContext,
-  sessionId: string
+  sessionId: string,
 ) {
   const originalUrl = new URL(page.url());
   const result = await executeAgentAction(page, actions, context.elements);
-  if(result){
+  if (result) {
     context.memoryMap.set(`memory_${context.memoryMap.size}`, result);
   }
 
@@ -157,7 +156,9 @@ async function handleActions(
     context.elements = await highlightAndLabelElements(page);
     await takeScreenshot(page, sessionId, context.screenshotHash);
     context.screenshotTaken = true;
-    context.screenshot = await imgToBase64(`screenshots/${sessionId}-${context.screenshotHash}.jpg`);
+    context.screenshot = await imgToBase64(
+      `screenshots/${sessionId}-${context.screenshotHash}.jpg`,
+    );
     context.url = null;
     context.screenshotHash++;
     console.log("URLs not same");
@@ -170,7 +171,7 @@ async function handleActions(
 async function takeScreenshot(
   page: Page,
   sessionId: string,
-  screenshotHash: number
+  screenshotHash: number,
 ) {
   await page.screenshot({
     path: `screenshots/${sessionId}-${screenshotHash}.jpg`,
