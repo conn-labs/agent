@@ -203,7 +203,7 @@ config()
 //   performAction(page, { action: "click", element: "1" }, data);
 // })();
 
-import { executeAgent } from "./llm/browser/clients";
+import { executeAgent, workflowAgent } from "./llm/browser/clients";
 // import { llmRequest } from "./llm/browser/llm";
 // import OpenAI from "openai";
 // import { fromatterPrompt } from "./llm/prompt/formatter";
@@ -225,8 +225,4 @@ import { executeAgent } from "./llm/browser/clients";
 // const prompt = res 
 
 
- await executeAgent(
-  `go to google.com search google finance, go to google finance, search for apple stock and complete ur workflow by explaining me the chart on the page`,
-  "",
-  "one",
-);
+await workflowAgent("Using google finance site, find 10 different company stocks and compare them and complete ur workflow by giving breief comparision between them using the graph on the page", "", 10, "one", "")

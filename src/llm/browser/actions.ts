@@ -22,7 +22,6 @@ export async function eventType(page: Page, text: string): Promise<void> {
   for (const char of text) {
     await page.keyboard.type(char, { delay: 100 });
   }
-  await page.keyboard.press("Enter");
 }
 
 export async function moveToElement(
@@ -103,7 +102,7 @@ export async function executeAgentAction(
         return null;
       }
       case "memorize": {
-        return  null;
+        return action.text || null;
       }
 
       case "enter": {

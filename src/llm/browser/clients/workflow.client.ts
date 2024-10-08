@@ -94,7 +94,7 @@ async function handleNavigation(
 
     context.elements = await highlightAndLabelElements(page);
     await takeScreenshot(page, sessionId, context.screenshotHash);
-    context.screenshot = await imgToBase64(`screenshot/${sessionId}-${context.screenshotHash}.jpg`);
+    context.screenshot = await imgToBase64(`screenshots/${sessionId}-${context.screenshotHash}.jpg`);
     context.screenshotTaken = true;
     context.url = null;
     context.screenshotHash++;
@@ -109,6 +109,7 @@ async function handleScreenshot(
     const memoryContent = Array.from(context.memoryMap.entries())
       .map(([key, value]) => `${key}: ${value}`)
       .join('\n');
+      console.log(memoryContent)
 
     context.messages.push({
       role: "user",
@@ -156,7 +157,7 @@ async function handleActions(
     context.elements = await highlightAndLabelElements(page);
     await takeScreenshot(page, sessionId, context.screenshotHash);
     context.screenshotTaken = true;
-    context.screenshot = await imgToBase64(`screenshot/${sessionId}-${context.screenshotHash}.jpg`);
+    context.screenshot = await imgToBase64(`screenshots/${sessionId}-${context.screenshotHash}.jpg`);
     context.url = null;
     context.screenshotHash++;
     console.log("URLs not same");
@@ -172,7 +173,7 @@ async function takeScreenshot(
   screenshotHash: number
 ) {
   await page.screenshot({
-    path: `screenshot/${sessionId}-${screenshotHash}.jpg`,
+    path: `screenshots/${sessionId}-${screenshotHash}.jpg`,
     fullPage: false,
   });
 }
