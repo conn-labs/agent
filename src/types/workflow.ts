@@ -60,20 +60,32 @@ export const WorkflowJobSchema = z.object({
 });
 
 const test = {
-  route: "/workflow",
-  data: {
-    input:
-      "Using Google Finance site, find 10 different company stocks and compare them. Complete your workflow by giving a brief comparison between them using the graph on the page.",
-    instances: 10,
-    apiKey: "quark_h3w)^ssrwN94[XH;-+ZuyXF;9p",
-    context: [
-      {
-        provider: "google-docs",
-        fields: ["id", "content"],
-        instructions: "Use them for getting xyz.",
-      },
-    ],
-    memory: true,
-    proMode: true,
-  },
-};
+    "route": "/workflow",
+    "data": {
+      "input": "Using Google Finance site, find 10 different company stocks and compare them. Complete your workflow by giving a brief comparison between them using the graph on the page.",
+      "instances": 10,
+      "apiKey": "quark_h3w)^ssrwN94[XH;-+ZuyXF;9p",
+      "context": [{
+        "provider": "GOOGLE",
+        "fields": ["id", "content"],
+        "instructions": "Use them for getting xyz."
+      }],
+      "memory": true,
+      "proMode": true
+    }
+  }
+  
+
+
+const test2 = {
+    "route": "/workflow",
+    "data": {
+      "input": "Using Google Finance site, find 10 different company stocks one by one and compare them using the information u see on the page. Complete your workflow by giving a brief comparison between them using the graph on the page.",
+      "instances": 10,
+      "apiKey": "quark_h3w)^ssrwN94[XH;-+ZuyXF;9p",
+      "context": [],
+      "memory": true,
+      "proMode": true
+    }
+  }
+  

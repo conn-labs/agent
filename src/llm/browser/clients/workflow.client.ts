@@ -61,17 +61,23 @@ export async function workflowAgent(
 
     if (data.url) {
       workflowContext.url = data.url;
+      ws?.send(JSON.stringify({ "thought": data.thought }))
     }
 
     if (data.success) {
+      ws?.send(JSON.stringify({ "success": data.success }))
       console.log(data.success);
+      ws?.close();
       break;
     }
 
     if (data.actions) {
+      ws?.send(JSON.stringify({ "thought": data.thought }))
       await handleActions(page, data.actions, workflowContext, sessionId);
     }
   }
+
+  ws?.close();
 }
 
 async function handleNavigation(
@@ -130,6 +136,8 @@ async function handleScreenshot(context: WorkflowContext, sessionId: string) {
     context.screenshot = "";
     context.screenshotTaken = false;
   }
+
+
 }
 
 async function handleActions(

@@ -47,7 +47,6 @@ export default async function workflowHandler(
     );
 
     console.log("ctx", context);
-    ws.close();
     await workflowAgent(
       parsedData.input,
       context.join("\n\n"),
