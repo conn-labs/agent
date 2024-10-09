@@ -26,8 +26,6 @@ export async function validateApiKeys(
   }
 }
 
-
-
 export async function validateApiKeyAndReturnUser(
   key: string,
 ): Promise<User | null> {
@@ -37,8 +35,8 @@ export async function validateApiKeyAndReturnUser(
         key: key,
       },
       include: {
-        user: true
-      }
+        user: true,
+      },
     });
 
     if (!data) return null;

@@ -145,7 +145,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 const PORT: number = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 
 server.listen(PORT, async () => {
-  console.log(process.env);
   console.log(`Server is running on http://localhost:${PORT}`);
   console.log(`WebSocket server is running on ws://localhost:${PORT}`);
 });

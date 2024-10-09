@@ -1,5 +1,8 @@
 import { WebSocket } from "ws";
-import { validateApiKeyAndReturnUser, validateApiKeys } from "../../common/validateApikey";
+import {
+  validateApiKeyAndReturnUser,
+  validateApiKeys,
+} from "../../common/validateApikey";
 import { WorkflowJobSchema } from "../../types/workflow";
 import { z } from "zod";
 import { contextParser } from "../../llm/parser/data.parser";
@@ -9,6 +12,7 @@ export default async function workflowHandler(
   ws: WebSocket,
   data: any,
 ): Promise<void> {
+  console.log("logged");
   const payload = data;
 
   try {
@@ -17,33 +21,40 @@ export default async function workflowHandler(
       ws.send(JSON.stringify({ error: "Invalid API key" }));
       return;
     }
-    const key = parsedData.apiKey
+    const key = parsedData.apiKey;
 
     const user = await validateApiKeyAndReturnUser(key);
-
-    if(!user) {
+    console.log(user);
+    if (!user) {
       ws.send(
         JSON.stringify({
           error: "Validation failed",
           issues: "Invalid Api key",
         }),
       );
-      ws.close()
-      return
+      ws.close();
+      return;
     }
 
-    const context = await parsedData.context.map(async (v) => {
-      const ctx = await contextParser(v.provider, v.fields, user?.id )
-      return ctx
-    }).join("/n")
-   
+    const context = await Promise.all(
+      parsedData.context
+        .map(async (v) => {
+          const ctx = await contextParser(v.provider, v.fields, user?.id);
+          console.log(ctx);
+          return ctx;
+        })
+        .join("/n"),
+    );
+
+    console.log("ctx", context);
+    ws.close();
     await workflowAgent(
       parsedData.input,
-      context,
+      context.join("\n\n"),
       parsedData.instances,
-      user.id, 
-      ws
-    )
+      user.id,
+      ws,
+    );
   } catch (error) {
     if (error instanceof z.ZodError) {
       ws.send(

@@ -27,7 +27,7 @@ export async function workflowAgent(
   context: string,
   instances: number,
   sessionId: string,
-  ws?: WebSocket
+  ws?: WebSocket,
 ) {
   const browser = await BrowserInstance();
   const page = await browser.newPage();

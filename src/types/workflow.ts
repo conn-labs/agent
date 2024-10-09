@@ -54,7 +54,26 @@ export const WorkflowJobSchema = z.object({
     }),
   ),
   instances: z.number().int().positive(),
-  memory: z.boolean(),
-  proMode: z.boolean(),
+  memory: z.boolean().nullable(),
+  proMode: z.boolean().nullable(),
   apiKey: z.string(),
 });
+
+const test = {
+  route: "/workflow",
+  data: {
+    input:
+      "Using Google Finance site, find 10 different company stocks and compare them. Complete your workflow by giving a brief comparison between them using the graph on the page.",
+    instances: 10,
+    apiKey: "quark_h3w)^ssrwN94[XH;-+ZuyXF;9p",
+    context: [
+      {
+        provider: "google-docs",
+        fields: ["id", "content"],
+        instructions: "Use them for getting xyz.",
+      },
+    ],
+    memory: true,
+    proMode: true,
+  },
+};
