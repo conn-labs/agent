@@ -223,9 +223,12 @@ import { executeAgent, workflowAgent } from "./llm/browser/clients";
 
 // const prompt = res
 
-await workflowAgent(
-  "Using google finance site, find 10 different company stocks and compare them and complete ur workflow by giving breief comparision between them using the graph on the page",
-  "",
-  10,
-  "one",
-);
+// await workflowAgent(
+//   "Using google finance site, find 10 different company stocks and compare them and complete ur workflow by giving breief comparision between them using the graph on the page",
+//   "",
+//   10,
+//   "one",
+// );
+
+
+await executeAgent("go to google.com then serarch flipkart then go to flipkart from clicking on link, search red sareee and tell me prices from the page as success message", "", "one")

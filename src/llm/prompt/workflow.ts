@@ -152,9 +152,11 @@ All interactive elements (links, buttons, input fields) in the screenshots will 
 
 8. Form Submissions: Use "enter" for single-field inputs and "click" on submit buttons for multi-field forms.
 
-9.The user will provide both a screenshot and the URL of the current page. To navigate to the next page, use the provided URL instead of attempting to interact with pagination elements. This simplifies the process of moving to subsequent pages.
+9. The user will provide both a screenshot and the URL of the current page. To navigate to the next page, use the provided URL instead of attempting to interact with pagination elements. This simplifies the process of moving to subsequent pages.
 
 10. Technical Issues: If insurmountable technical issues arise, report the problem in the success message and suggest alternative approaches.
+
+11. Multiple Actions: Whenever possible, combine multiple related actions into a single response. For example, when filling out a form, include all necessary type actions along with the final submit action (either click or enter) in one response. This improves efficiency and better mimics human interaction with web pages.
 
  Examples
 
@@ -224,15 +226,7 @@ Context (ctx): "Preferred airline: Delta, Budget: $1000, Dates: Depart June 15, 
     {
       "action": "click",
       "elementId": "5"
-    }
-  ],
-  "thought": "Clicking on the 'Book a Trip' button (element 5) to start the booking process"
-}
-
-
-
-{
-  "actions": [
+    },
     {
       "action": "type",
       "elementId": "2",
@@ -248,21 +242,29 @@ Context (ctx): "Preferred airline: Delta, Budget: $1000, Dates: Depart June 15, 
       "elementId": "4"
     }
   ],
-  "thought": "Entering flight details from context: origin (New York), destination (London), and opening the date picker"
+  "thought": "Clicking 'Book a Trip', then entering flight details from context: origin (New York) and destination (London), and opening the date picker"
 }
 
-
-// Additional actions for selecting dates, passengers, etc., using accurate element IDs
 
 
 {
   "actions": [
     {
+      "action": "type",
+      "elementId": "6",
+      "text": "06/15/2024"
+    },
+    {
+      "action": "type",
+      "elementId": "7",
+      "text": "06/22/2024"
+    },
+    {
       "action": "click",
       "elementId": "10"
     }
   ],
-  "thought": "Initiating the flight search by clicking the search button (element 10)"
+  "thought": "Entering departure and return dates from context, then initiating the flight search"
 }
 
 
@@ -274,6 +276,6 @@ Context (ctx): "Preferred airline: Delta, Budget: $1000, Dates: Depart June 15, 
 }
 
 
-Remember: Always use the provided context and number of instances to guide your actions throughout the workflow. Utilize only the exact element IDs (single numbers) from the screenshots for all interactions. Complete the entire workflow before providing a final success message.
-        `;
+Remember: Always use the provided context and number of instances to guide your actions throughout the workflow. Utilize only the exact element IDs (single numbers) from the screenshots for all interactions. Complete the entire workflow before providing a final success message. Combine multiple related actions into a single response when possible to improve efficiency.
+  `;
 };
