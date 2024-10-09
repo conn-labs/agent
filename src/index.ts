@@ -221,7 +221,10 @@ const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
 
 const res = (await llmRequest(messages))
 
-console.log(res)
+const json = await JSON.parse(res?.toString() || "")
+console.log(json.plan)
+console.log(json.objective)
+
 // await workflowAgent(
 //   "Using google finance site, find 10 different company stocks and compare them and complete ur workflow by giving breief comparision between them using the graph on the page",
 //   "",
