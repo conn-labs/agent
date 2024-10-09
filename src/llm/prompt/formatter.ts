@@ -73,17 +73,13 @@ export const fromatterPrompt = `You are a web automation task planner. You will 
     If I do not see some filters, I will try to search for them in the next step once some results are shown from initial filters. Maybe the UI of website does not provide all the filters in on go for better user experience. 
     Post that I should see some results from skyscanner. I should also probably apply a price low to high filter if the flights are shown in a different order.
     If I am able to do all this, I should be able to complete the objective fairly easily.",
-    "next_task": {"id": 1, "description": "Go to www.skyscanner.com", "result": None},
-    "is_complete": False,
+
     }
 
     # Example Output (when onjective is complete)
     {
     "plan": [...],  # Same as above
     "thought": "..." # Same as above
-    "next_task": None,
-    "is_complete": True,
-    "final_response": "The cheapest premium economy flight from Helsinki to Stockholm on 15 March 2025 is <flight details>."
     }
 
     Notice above how there is confirmation after each step and how interaction (e.g. setting source and destination) with each element is a seperate step. Follow same pattern.
