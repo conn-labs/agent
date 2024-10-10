@@ -205,32 +205,16 @@ config();
 
 import { executeAgent, workflowAgent } from "./llm/browser/clients";
 import { llmRequest } from "./llm/browser/llm";
-import OpenAI from "openai";
-import { fromatterPrompt } from "./llm/prompt/formatter";
 
-const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
-  {
-    role: "system",
-    content: fromatterPrompt,
-  },
-  {
-    role: "user",
-    content: "Find me a hello kitty doll",
-  },
-];
 
-const res = (await llmRequest(messages))
-
-const json = await JSON.parse(res?.toString() || "")
-console.log(json.plan)
-console.log(json.objective)
-
-// await workflowAgent(
-//   "Using google finance site, find 10 different company stocks and compare them and complete ur workflow by giving breief comparision between them using the graph on the page",
-//   "",
-//   10,
-//   "one",
-// );
+await workflowAgent(
+  `go to flipkart.com and search 10 laptops of 10 different 
+  brands by url jumping or searching manually 
+  and compare there prices in the success message at end`,
+  "",
+  10,
+  "one",
+);
 
 
 
