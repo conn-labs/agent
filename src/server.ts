@@ -59,7 +59,7 @@ app.get(
     console.log(token);
 
     // Redirect the user with the generated JWT token
-    res.redirect(`${process.env.FRONTEND_URL}/api/verify?jwt=${token}`);
+    res.redirect(`${process.env.FRONTEND_URL}/verify?jwt=${token}`);
   },
 );
 
