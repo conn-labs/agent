@@ -29,5 +29,5 @@ export default async function agentHandler(
     return;
   }
 
-  await wssLiveAgent(payload.prompt, payload.context, randomUUID(), ws);
+  await wssLiveAgent(payload.prompt, payload.context, randomUUID(), ws, );
 }

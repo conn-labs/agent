@@ -53,6 +53,7 @@ export default async function workflowHandler(
       parsedData.instances,
       user.id,
       ws,
+      parsedData.openaiKey || undefined
     );
   } catch (error) {
     if (error instanceof z.ZodError) {

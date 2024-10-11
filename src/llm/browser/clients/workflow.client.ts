@@ -28,8 +28,9 @@ export async function workflowAgent(
   instances: number,
   sessionId: string,
   ws?: WebSocket,
+  openaiKey?: string,
 ) {
-  const browser = await BrowserInstance();
+  const browser = await BrowserInstance(true);
   const page = await browser.newPage();
 
   const workflowContext: WorkflowContext = {
@@ -49,7 +50,7 @@ export async function workflowAgent(
     await handleNavigation(page, workflowContext, sessionId);
     await handleScreenshot(workflowContext, sessionId);
 
-    const response = await llmRequest(workflowContext.messages);
+    const response = await llmRequest(workflowContext.messages,openaiKey );
     if (!response) break;
 
     workflowContext.messages.push({

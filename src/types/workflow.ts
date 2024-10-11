@@ -30,6 +30,7 @@ export interface AgentWorkflow {
   proMode: boolean;
   email: string;
   apiKey: string;
+  openaiKey?: string;
 }
 
 export interface workflowContext {
@@ -57,6 +58,7 @@ export const WorkflowJobSchema = z.object({
   memory: z.boolean().nullable(),
   proMode: z.boolean().nullable(),
   apiKey: z.string(),
+  openaiKey: z.string().nullable(),
 });
 
 const test = {
