@@ -7,7 +7,6 @@ import { basePrompt } from "../../prompt/agent";
 import { llmRequest } from "../llm";
 import { waitForEvent } from "../event";
 import { Elements } from "../../../types/browser";
-import { PuppeteerScreenRecorder } from "../../../../pup-ss/src";
 import { AgentAction } from "../../../types/action";
 import { imgToBase64 } from "../../../utils/img";
 import { sleep } from "../../../utils/sleep";
@@ -20,7 +19,6 @@ export async function executeAgent(
 ) {
   const browser = await BrowserInstance();
   const page = await browser.newPage();
-  const recorder = new PuppeteerScreenRecorder(page);
 
   const agentContext: AgentExecutionContext = {
     messages: [
@@ -50,7 +48,6 @@ export async function executeAgent(
 
     if (data.success) {
       console.log(data.success);
-      recorder.stop();
       break;
     }
 
