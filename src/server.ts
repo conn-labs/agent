@@ -12,6 +12,8 @@ import { magicLogin } from "./api/controllers/authentication";
 import passport from "passport";
 import { createApiKey } from "./api/controllers/apikey";
 import { GoogleRedirect, GoogleCallback } from "./api/controllers/google";
+import { listApiKeys } from "./api/controllers/getApiKey";
+import { deleteApiKey } from "./api/controllers/deleteApiKey";
 const app: Express = express();
 const server: HttpServer = createServer(app);
 const wss: WebSocketServer = new WebSocketServer({ server });
@@ -64,6 +66,10 @@ app.get(
 );
 
 app.post("/api/keys", createApiKey);
+
+app.get("/api/keys/get", listApiKeys )
+
+app.post("/api/keys/delete", deleteApiKey)
 
 app.get("/auth/google", GoogleRedirect);
 
