@@ -5,7 +5,7 @@ import { prisma } from "../../lib";
 
 export const deleteApiKey = async (req: Request, res: Response) => {
   const email = await validateJwt(req);
-
+  console.log(email)
   if (!email) {
     res.status(401).json({ error: "Unauthorized: Invalid or missing token" });
     return;
@@ -18,12 +18,13 @@ export const deleteApiKey = async (req: Request, res: Response) => {
     return;
   }
 
-  const { apiKeyId } = req.params;
+  const { id } = req.params;
 
+  console.log(id, user.id)
   try {
     const deletedApiKey = await prisma.apiKey.deleteMany({
       where: {
-        id: apiKeyId,
+        id: id,
         userId: user.id,
       },
     });

@@ -69,7 +69,7 @@ app.post("/api/keys", createApiKey);
 
 app.get("/api/keys/get", listApiKeys )
 
-app.post("/api/keys/delete", deleteApiKey)
+app.post("/api/keys/:id", deleteApiKey)
 
 app.get("/auth/google", GoogleRedirect);
 

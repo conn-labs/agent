@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 
 export async function validateJwt(req: Request): Promise<string | null> {
   const token = req.headers.authorization?.replace("Bearer ", "");
+  console.log(req.headers.authorization)
   if (!token) return null;
   try {
     const data = jwt.decode(token) as { email: string };

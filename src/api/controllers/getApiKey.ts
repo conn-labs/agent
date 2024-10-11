@@ -25,6 +25,7 @@ export const listApiKeys = async (req: Request, res: Response) => {
       },
       select: {
         id: true,
+        key: true,
         description: true,
         createdAt: true,
       },
