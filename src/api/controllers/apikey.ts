@@ -37,7 +37,7 @@ export const createApiKey = async (req: Request, res: Response) => {
       id: apiKey.id,
       key: apiKey.key,
       description: apiKey.description,
-      createdAt: apiKey.createdAt
+      createdAt: apiKey.createdAt,
     },
   });
 };

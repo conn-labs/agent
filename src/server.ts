@@ -14,6 +14,7 @@ import { createApiKey } from "./api/controllers/apikey";
 import { GoogleRedirect, GoogleCallback } from "./api/controllers/google";
 import { listApiKeys } from "./api/controllers/getApiKey";
 import { deleteApiKey } from "./api/controllers/deleteApiKey";
+import { listAuthentications } from "./api/controllers/auths";
 const app: Express = express();
 const server: HttpServer = createServer(app);
 const wss: WebSocketServer = new WebSocketServer({ server });
@@ -67,9 +68,10 @@ app.get(
 
 app.post("/api/keys", createApiKey);
 
-app.get("/api/keys/get", listApiKeys )
+app.get("/api/keys/get", listApiKeys);
 
-app.post("/api/keys/:id", deleteApiKey)
+app.get("/api/providers", listAuthentications);
+app.post("/api/keys/:id", deleteApiKey);
 
 app.get("/auth/google", GoogleRedirect);
 

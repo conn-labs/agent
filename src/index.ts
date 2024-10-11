@@ -206,7 +206,6 @@ config();
 import { executeAgent, workflowAgent } from "./llm/browser/clients";
 import { llmRequest } from "./llm/browser/llm";
 
-
 await workflowAgent(
   `go to flipkart.com and search 10 laptops of 10 different 
   brands by url jumping or searching manually 
@@ -215,6 +214,3 @@ await workflowAgent(
   10,
   "one",
 );
-
-
-

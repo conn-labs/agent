@@ -3,9 +3,9 @@ import { validateJwt } from "../../common/validateJwt";
 import { findUserByEmail } from "../../common/findUser";
 import { prisma } from "../../lib";
 
-export const deleteApiKey = async (req: Request, res: Response) => {
+export const listAuthentications = async (req: Request, res: Response) => {
   const email = await validateJwt(req);
-  console.log(email);
+
   if (!email) {
     res.status(401).json({ error: "Unauthorized: Invalid or missing token" });
     return;
@@ -18,28 +18,25 @@ export const deleteApiKey = async (req: Request, res: Response) => {
     return;
   }
 
-  const { id } = req.params;
-
-  console.log(id, user.id);
   try {
-    const deletedApiKey = await prisma.apiKey.deleteMany({
+    const authentications = await prisma.authentication.findMany({
       where: {
-        id: id,
         userId: user.id,
+      },
+      select: {
+        id: true,
+        provider: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
 
-    if (deletedApiKey.count === 0) {
-      res.status(404).json({ error: "API key not found or not owned by user" });
-      return;
-    }
-
     res.status(200).json({
       success: true,
-      message: "API key deleted successfully",
+      authentications: authentications,
     });
   } catch (error) {
-    console.error("Error deleting API key:", error);
+    console.error("Error listing authentications:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
