@@ -50,7 +50,7 @@ export async function workflowAgent(
     await handleNavigation(page, workflowContext, sessionId);
     await handleScreenshot(workflowContext, sessionId);
 
-    const response = await llmRequest(workflowContext.messages,openaiKey );
+    const response = await llmRequest(workflowContext.messages, openaiKey);
     if (!response) break;
 
     workflowContext.messages.push({
