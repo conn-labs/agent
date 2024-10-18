@@ -30,7 +30,7 @@ export async function workflowAgent(
   ws?: WebSocket,
   openaiKey?: string,
 ) {
-  const browser = await BrowserInstance(true);
+  const browser = await BrowserInstance(false);
   const page = await browser.newPage();
 
   const workflowContext: WorkflowContext = {

@@ -209,7 +209,7 @@ import { llmRequest } from "./llm/browser/llm";
 await workflowAgent(
   `go to flipkart.com and search 10 laptops of 10 different 
   brands by url jumping or searching manually 
-  and compare there prices in the success message at end`,
+  and compare their prices in the success message at end`,
   "",
   10,
   "one",

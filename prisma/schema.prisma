@@ -15,8 +15,8 @@ model User {
   updatedAt DateTime @updatedAt
 
   apiKeys   ApiKey[]  
-
-  auth Authentication[]
+  auth      Authentication[]
+  workflows Workflow[]
 }
 
 model ApiKey {
@@ -32,7 +32,6 @@ model ApiKey {
   @@unique([userId, key]) 
 }
 
-
 model Authentication {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   provider     Provider
@@ -44,6 +43,25 @@ model Authentication {
   updatedAt    DateTime @updatedAt
 
   @@unique([userId, provider])
+}
+
+model Workflow {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  messages  Message[]
+}
+
+model Message {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  role       String
+  content    String
+  workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  workflowId String   @db.ObjectId
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 enum Provider {
