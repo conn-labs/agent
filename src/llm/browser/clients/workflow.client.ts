@@ -30,7 +30,6 @@ export async function workflowAgent(
   sessionId: string,
   ws?: WebSocket,
   openaiKey?: string,
-  userId?: string,
 ) {
   const browser = await BrowserInstance(false);
   const page = await browser.newPage();
@@ -80,9 +79,20 @@ export async function workflowAgent(
     }
   }
 
-  const history = await 
-
-
+  const history = await prisma.workflow.create({
+    data: {
+      userId: sessionId ,
+      input,
+      instances,
+      messages: {
+        create: workflowContext.messages.map(message => ({
+          role: message.role,
+          content: JSON.stringify(message.content)
+        }))
+      }
+    }
+  });
+  console.log(history.id);
 
   ws?.close();
 }

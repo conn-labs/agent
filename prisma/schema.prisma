@@ -51,13 +51,15 @@ model Workflow {
   userId    String   @db.ObjectId
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  input String
+  instances Int
   messages  Message[]
 }
 
 model Message {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   role       String
-  content    Json
+  content    Json 
   workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
   workflowId String   @db.ObjectId
   createdAt  DateTime @default(now())
