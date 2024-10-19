@@ -11,6 +11,7 @@ import { llmRequest } from "../llm";
 import { waitForEvent } from "../event";
 import { Page } from "puppeteer";
 import { WebSocket } from "ws";
+import { prisma } from "../../../lib";
 
 interface WorkflowContext {
   messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[];
@@ -29,6 +30,7 @@ export async function workflowAgent(
   sessionId: string,
   ws?: WebSocket,
   openaiKey?: string,
+  userId?: string,
 ) {
   const browser = await BrowserInstance(false);
   const page = await browser.newPage();
@@ -77,6 +79,10 @@ export async function workflowAgent(
       await handleActions(page, data.actions, workflowContext, sessionId);
     }
   }
+
+  const history = await 
+
+
 
   ws?.close();
 }
