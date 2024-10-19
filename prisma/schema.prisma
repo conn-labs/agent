@@ -56,14 +56,9 @@ model Workflow {
   messages  Message[]
 }
 
-model Message {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+type Message {
   role       String
   content    Json 
-  workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
-  workflowId String   @db.ObjectId
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
 }
 
 enum Provider {

@@ -78,21 +78,22 @@ export async function workflowAgent(
       await handleActions(page, data.actions, workflowContext, sessionId);
     }
   }
+  const messages = workflowContext.messages.map(m => ({
+    role: m.role,
+    content: JSON.stringify(m.content)
+  }));
 
   const history = await prisma.workflow.create({
     data: {
-      userId: sessionId ,
+      userId: sessionId,
       input,
       instances,
-      messages: {
-        create: workflowContext.messages.map(message => ({
-          role: message.role,
-          content: JSON.stringify(message.content)
-        }))
-      }
+      messages: messages
     }
   });
+  
   console.log(history.id);
+  browser.close();
 
   ws?.close();
 }
@@ -101,7 +102,7 @@ async function handleNavigation(
   page: Page,
   context: WorkflowContext,
   sessionId: string,
-) {
+)  {
   if (context.url) {
     console.log("URL", context.url);
     context.messages.push({
