@@ -39,3 +39,4 @@ export async function parseLinksFromHtml(url: string): Promise<LinkInfo[]> {
     return [];
   }
 }
+
