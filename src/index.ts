@@ -207,10 +207,8 @@ import { executeAgent, workflowAgent } from "./llm/browser/clients";
 import { llmRequest } from "./llm/browser/llm";
 
 await workflowAgent(
-  `go to flipkart.com and search 10 laptops of 10 different 
-  brands by url jumping or searching manually 
-  and compare their prices in the success message at end`,
+  `Go through YC companies from any batch and open their YC profile pages (URL jumping preferred). For each company, remember the Year it was founder and Site URL. Continue this until you have collected 100 unique URLS. Make sure there are no duplicates, and remember the Companies you've already saved. Once you have all 100 companies, return the data in a success message."`,
   "",
-  10,
+  100,
   "one",
 );

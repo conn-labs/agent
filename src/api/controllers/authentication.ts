@@ -1,8 +1,8 @@
 import MagicLoginStrategy from "passport-magic-login";
-import { prisma } from "../../lib";
+import { prisma } from "../../lib";                    
 import passport from "passport";
 import { sendMagicLinkMail, subscribeToEvents } from "../../utils/email";
-import { generateFromEmail } from "unique-username-generator";
+import { generateFromEmail } from "unique-username-generator";            
 
 passport.serializeUser(function (
   user: Express.User,
@@ -10,6 +10,8 @@ passport.serializeUser(function (
 ) {
   done(null, user);
 });
+
+
 
 passport.deserializeUser(function (
   user: Express.User,

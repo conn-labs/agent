@@ -12,6 +12,7 @@ import { waitForEvent } from "../event";
 import { Page } from "puppeteer";
 import { WebSocket } from "ws";
 import { prisma } from "../../../lib";
+import { extractAndSaveCookies } from "../../../common/extractSaveCookies";
 
 interface WorkflowContext {
   messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[];
@@ -50,7 +51,7 @@ export async function workflowAgent(
   while (true) {
     await handleNavigation(page, workflowContext, sessionId);
     await handleScreenshot(workflowContext, sessionId);
-
+ 
     const response = await llmRequest(workflowContext.messages, openaiKey);
     if (!response) break;
 
@@ -172,6 +173,7 @@ async function handleActions(
   const newUrl = new URL(page.url());
 
   if (originalUrl.toString() !== newUrl.toString()) {
+    extractAndSaveCookies(page)
     context.messages.push({
       role: "user",
       content: `You're on this URL: ${newUrl.toString()}`,

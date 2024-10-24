@@ -22,6 +22,6 @@ export const createScrap = async (req: Request, res: Response) => {
   if (!apiKeyAuth) {
     res.status(401).json({ error: "Unauthorized: Invalid or missing apiKey" });
   }
+  
 
-  // to be implemented LOL
 };

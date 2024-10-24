@@ -4,11 +4,22 @@ import type { Authentication } from "@prisma/client"; // Type-only import
 import { prisma } from "../lib";
 
 async function saveAuthentication(
+
+  
   provider: Provider,
+
+
   accessToken: string,
+
+
   userId: string,
+
+
   refreshToken?: string | null,
+
+
 ): Promise<Authentication> {
+  
   try {
     const authentication = await prisma.authentication.upsert({
       where: {
@@ -17,10 +28,12 @@ async function saveAuthentication(
           provider,
         },
       },
+
       update: {
         accessToken,
         refreshToken,
       },
+
       create: {
         provider,
         accessToken,
