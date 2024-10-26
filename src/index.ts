@@ -208,7 +208,10 @@ import { llmRequest } from "./llm/browser/llm";
 
 await workflowAgent(
   `Go through YC companies from any batch and open their YC profile pages (URL jumping preferred). For each company, remember the Year it was founder and Site URL. Continue this until you have collected 100 unique URLS. Make sure there are no duplicates, and remember the Companies you've already saved. Once you have all 100 companies, return the data in a success message."`,
+
   "",
+
   100,
+  
   "one",
 );
