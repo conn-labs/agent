@@ -116,7 +116,7 @@ async function handleNavigation(
       waitUntil: "domcontentloaded",
       timeout: 5000,
     });
-    await Promise.race([waitForEvent(page, "load"), sleep(5000)]);
+    await Promise.race([waitForEvent(page, "load"), sleep(1000)]);
 
     context.elements = await highlightAndLabelElements(page);
     await takeScreenshot(page, sessionId, context.screenshotHash);

@@ -14,7 +14,7 @@ export const deleteApiKey = async (req: Request, res: Response) => {
   const user = await findUserByEmail(email);
 
   if (!user) {
-    res.status(404).json({ error: "User not found" });
+    res.status(404).json({ error: "User not found." });
     return;
   }
 
