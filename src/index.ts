@@ -1,4 +1,6 @@
 import { config } from "dotenv";
+import { Browser } from "puppeteer";
+import { sleep } from "./utils/sleep";
 config();
 // interface Rect {
 //   left: number;
@@ -207,7 +209,7 @@ import { executeAgent, workflowAgent } from "./llm/browser/clients";
 import { llmRequest } from "./llm/browser/llm";
 
 await workflowAgent(
-  `Go through YC companies from any batch and open their YC profile pages (URL jumping preferred). For each company, remember the Year it was founder and Site URL. Continue this until you have collected 100 unique URLS. Make sure there are no duplicates, and remember the Companies you've already saved. Once you have all 100 companies, return the data in a success message."`,
+  `login on github using this  "`,
 
   "",
 
@@ -215,3 +217,21 @@ await workflowAgent(
   
   "one",
 );
+
+
+// const puppeteer = require('puppeteer-extra')
+
+// // add stealth plugin and use defaults (all evasion techniques)
+// const StealthPlugin = require('puppeteer-extra-plugin-stealth')
+// puppeteer.use(StealthPlugin())
+
+// // puppeteer usage as normal
+// puppeteer.launch({ headless: true }).then(async (browser:Browser) => {
+//   console.log('Running tests..')
+//   const page = await browser.newPage()
+//   await page.goto('https://bot.sannysoft.com')
+//   sleep(5000)
+//   await page.screenshot({ path: 'testresult.png', fullPage: true })
+//   await browser.close()
+//   console.log(`All done, check the screenshot. ✨`)
+// })

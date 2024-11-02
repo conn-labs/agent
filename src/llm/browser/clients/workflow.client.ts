@@ -34,7 +34,8 @@ export async function workflowAgent(
 ) {
   const browser = await BrowserInstance(false);
   const page = await browser.newPage();
-
+  await page.setBypassCSP(true) 
+  sleep(1000)
   const workflowContext: WorkflowContext = {
     messages: [
       { role: "system", content: workflowPrompt(context, instances) },
@@ -63,6 +64,7 @@ export async function workflowAgent(
     const data = JSON.parse(response.toString());
 
     if (data.url) {
+  
       workflowContext.url = data.url;
       ws?.send(JSON.stringify({ thought: data.thought }));
     }
@@ -116,7 +118,7 @@ async function handleNavigation(
       waitUntil: "domcontentloaded",
       timeout: 5000,
     });
-    await Promise.race([waitForEvent(page, "load"), sleep(1000)]);
+    await Promise.race([waitForEvent(page, "load"), sleep(5000)]);
 
     context.elements = await highlightAndLabelElements(page);
     await takeScreenshot(page, sessionId, context.screenshotHash);
